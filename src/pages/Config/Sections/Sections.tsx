@@ -25,7 +25,7 @@ import {ActionType} from "typesafe-actions";
 import DICTIONARY from '../../../services/storageService';
 import NavBar from "../../../Components/NavBar";
 import {Section} from "../../../Models/Section";
-import {swap, arrowBack, arrowForward} from "ionicons/icons";
+import {swapHorizontal, arrowBack, arrowForward} from "ionicons/icons";
 //Style
 import './Sections.css';
 
@@ -89,11 +89,11 @@ class SectionPage extends React.Component<ReduxType> {
         } else {
             return (
                 // move / repeat
-                <IonReorderGroup disabled={this.state.editMode === true} onIonItemReorder={this.doReorder}>
+                <IonReorderGroup disabled={this.state.editMode} onIonItemReorder={this.doReorder}>
                     {this.props.sectionList
                         .sort((a, b) => (a.order - b.order))
                         .map(item => {
-                            let icon = item.order===0?arrowForward:item.order===this.props.sectionList.length-1?arrowBack:swap
+                            let icon = item.order===0?arrowForward:item.order===this.props.sectionList.length-1?arrowBack:swapHorizontal
                             return (
                                 <IonReorder key={item.id}>
                                     <IonItem>

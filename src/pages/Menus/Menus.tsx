@@ -11,7 +11,7 @@ import {
     IonPage,
     IonText
 } from '@ionic/react';
-import React, {Component} from 'react';
+import React from 'react';
 import {connect} from 'react-redux';
 import {Dispatch} from 'redux';
 
@@ -22,10 +22,7 @@ import {displayToast, updateMenu} from "../../actions/actions";
 import {IRootState} from "../../reducers";
 import {ActionType} from "typesafe-actions";
 import {Menu} from "../../Models/Menu";
-import {
-    arrowBack, arrowForward, closeCircleOutline, trendingDown, save, arrowDropup,
-    arrowDropdown
-} from "ionicons/icons";
+import {caretDownOutline, caretUpOutline, closeCircleOutline, save} from "ionicons/icons";
 import {Dish} from "../../Models/Dish";
 
 import DICTIONARY, {DINNER, INFO, LUNCH} from '../../services/storageService'
@@ -171,7 +168,7 @@ class MenusPage extends React.Component<ReduxType> {
                 {this.props.menuList
                     .map(item => {
 
-                        let icon = this.state.displayMenu.has(item.id) && this.state.displayMenu.get(item.id)?arrowDropup:arrowDropdown
+                        let icon = this.state.displayMenu.has(item.id) && this.state.displayMenu.get(item.id)?caretUpOutline:caretDownOutline
                         return (
                             <div key={item.id}>
                                 <IonItem

@@ -6,7 +6,7 @@ import {Ingredient} from "../Models/Ingredient";
 import {Dish} from "../Models/Dish";
 import {Menu} from "../Models/Menu";
 
-import {Storage} from '@capacitor/core';
+import {Storage} from '@capacitor/storage';
 
 import {FileSharer} from '@byteowls/capacitor-filesharer';
 import {Section} from "../Models/Section";

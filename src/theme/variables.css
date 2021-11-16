@@ -77,5 +77,5 @@ http://ionicframework.com/docs/theming/ */
 }
 
 body {
-  background: url('/assets/background/fond.png') no-repeat center/cover fixed;
+  background: url('https://site-projet.kaminski.lu/assets/background/fond.png') no-repeat center/cover fixed;
 }
