@@ -1,6 +1,3 @@
-import React from 'react';
-
-
 import dico_json from '../data/dictionary.json'
 import {Ingredient} from "../Models/Ingredient";
 import {Dish} from "../Models/Dish";
@@ -24,6 +21,36 @@ export enum Unit {
     CAN = "LITER"
 }
 
+/**
+ * CONFIG CLOUD
+ */
+export async function setCloudServerAddress(value: string): Promise<void> {
+    await Storage.set({
+        key: "serverAddress",
+        value: value
+    })
+}
+
+export async function getCloudServerAddress(): Promise<string> {
+    let newVar = await Storage.get({key: "serverAddress"}) as any;
+    return newVar.value;
+}
+
+export async function setCloudIdentifier(value: string): Promise<void> {
+    await Storage.set({
+        key: "identifiant",
+        value: value
+    })
+}
+
+export async function getCloudIdentifier(): Promise<string> {
+    let newVar = await Storage.get({key: "identifiant"}) as any;
+    return newVar.value;
+}
+
+/**
+ * DONNEES
+ */
 export async function setIngredients(value: Ingredient[]): Promise<void> {
     await Storage.set({
         key: "ingredientList",

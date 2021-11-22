@@ -1,5 +1,4 @@
-import React, {Component} from 'react';
-import {IRootState} from "../../reducers";
+import React from 'react';
 import {Dispatch} from 'redux';
 import {IonButton, IonCardSubtitle, IonContent, IonFooter, IonHeader, IonImg, IonItem, IonPage} from '@ionic/react';
 
@@ -14,7 +13,7 @@ import {displayToast} from "../../actions/actions";
 import {ActionType} from "typesafe-actions";
 
 
-const mapStateToProps = ({}: IRootState) => {
+const mapStateToProps = () => {
     return {};
 }
 
@@ -92,4 +91,4 @@ class HomePage extends React.Component<ReduxType> {
     }
 }
 
-export default connect(mapStateToProps, {displayToast})(HomePage);;
+export default connect(mapStateToProps, {displayToast})(HomePage);

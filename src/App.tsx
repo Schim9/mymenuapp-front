@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Redirect, Route} from 'react-router-dom';
 import {IonApp, IonRouterOutlet, IonToast} from '@ionic/react';
 import {IonReactRouter} from '@ionic/react-router';
@@ -24,23 +24,33 @@ import IngredientsPage from "./pages/Config/Ingredients/Ingredients";
 import SectionPage from "./pages/Config/Sections/Sections";
 import MenusPage from "./pages/Menus/Menus";
 import ShoppingList from "./pages/ShoppingList/ShoppingList";
+import CloudPage from "./pages/Config/Cloud/Cloud";
 
-import {getDishes, getIngredients, getMenus, getSections} from "./services/storageService";
+import DICTIONARY, {
+    getDishes,
+    getCloudIdentifier,
+    getIngredients,
+    getMenus,
+    getSections,
+    getCloudServerAddress
+} from "./services/storageService";
 import {Dish} from "./Models/Dish";
 import {IRootState} from "./reducers";
 import {ActionType} from "typesafe-actions";
 import * as actions from "./actions/actions";
 import {
-    hideToast, prepareDishList, prepareIngredientList, prepareMenuList,
+    hideToast,
+    prepareCloudConfiguration,
+    prepareDishList,
+    prepareIngredientList,
+    prepareMenuList,
     prepareSectionList
 } from "./actions/actions";
 import {connect} from "react-redux";
 import {Dispatch} from 'redux';
 import {Ingredient} from "./Models/Ingredient";
 import {FRIDAY, Menu, MONDAY, SATURDAY, SUNDAY, THURSDAY, TUESDAY, WEDNESDAY} from "./Models/Menu";
-import DICTIONARY from "./services/storageService";
 import {Section} from "./Models/Section";
-
 
 const mapStateToProps = ({notificationReducer}: IRootState) => {
     const {displayToast, toastMessage, toastType} = notificationReducer;
@@ -54,6 +64,7 @@ const mapDispatcherToProps = (dispatch: Dispatch<ActionType<typeof actions>>) =>
         prepareDishList: (element: Dish[]) => dispatch(actions.prepareDishList(element)),
         prepareSectionList: (element: Section[]) => dispatch(actions.prepareSectionList(element)),
         prepareMenuList: (element: Menu[]) => dispatch(actions.prepareMenuList(element)),
+        prepareCloudConfiguration: ((serverAddress: string, identifier: string) => dispatch(actions.prepareCloudConfiguration(serverAddress,identifier))),
         hideToast: () => dispatch(actions.hideToast())
     }
 }
@@ -109,6 +120,13 @@ class App extends React.Component<ReduxType> {
                 this.props.prepareMenuList(value)
             }
         );
+        getCloudServerAddress().then(serverAddress => {
+            getCloudIdentifier().then(identifier => {
+                this.props.prepareCloudConfiguration(serverAddress, identifier);
+            })
+            }
+        );
+
     }
 
 
@@ -124,6 +142,7 @@ class App extends React.Component<ReduxType> {
                         <Route path="/menu" component={MenusPage} exact={true}/>
                         <Route path="/list" component={ShoppingList} exact={true}/>
                         <Route path="/import" component={ImportPage} exact={true}/>
+                        <Route path="/cloud" component={CloudPage} exact={true}/>
                         <Route exact path="/" render={() => <Redirect to="/home"/>}/>
                     </IonRouterOutlet>
                 </IonReactRouter>
@@ -146,4 +165,5 @@ export default connect(mapStateToProps, {
     prepareDishList,
     prepareSectionList,
     prepareMenuList,
+    prepareCloudConfiguration,
     hideToast})(App);

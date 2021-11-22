@@ -1,5 +1,5 @@
 //React
-import React, {Component} from 'react';
+import React from 'react';
 //Redux
 import {connect} from "react-redux";
 import {Dispatch} from 'redux';
@@ -15,10 +15,9 @@ import {
     IonModal,
     IonPage,
     IonSearchbar,
-    IonSegment,
-    IonSegmentButton, IonSelect, IonSelectOption, IonSlide, IonSlides,
-    IonTextarea,
-    IonToolbar
+    IonSelect,
+    IonSelectOption,
+    IonTextarea
 } from '@ionic/react';
 //Style
 import './Ingredients.css';
@@ -34,8 +33,6 @@ import {Dish} from "../../../Models/Dish";
 import DICTIONARY, {ERROR, INFO} from '../../../services/storageService';
 import NavBar from "../../../Components/NavBar";
 import {Menu} from "../../../Models/Menu";
-import {Section} from "../../../Models/Section";
-import {number, string} from "prop-types";
 
 const mapStateToProps = ({ingredientReducer, dishReducer, sectionReducer, menuReducer}: IRootState) => {
     const {ingredientList} = ingredientReducer;
@@ -163,7 +160,7 @@ class IngredientsPage extends React.Component<ReduxType> {
     }
 
     renderIngredients = () => {
-        if (this.props.ingredientList.length == 0) {
+        if (this.props.ingredientList.length === 0) {
             return (<IonLabel>{DICTIONARY.db.INFO_MESSAGE.NO_ELEMENT}</IonLabel>)
         } else {
             return (
@@ -218,7 +215,7 @@ class IngredientsPage extends React.Component<ReduxType> {
                     this.resetState();
                 }}>
                 <IonItem className="flex-container">
-                    <img src={icon} height="40px"/>
+                    <img src={icon} height="40px" alt={icon}/>
                     <div className="title">{modalTitle}</div>
                 </IonItem>
                 <IonItem className="modal-content">
@@ -267,7 +264,7 @@ class IngredientsPage extends React.Component<ReduxType> {
                                onClick={() => this.setState({
                                    displayModal: false,
                                    deleteMode: false,
-                                   currentIngredient: new Dish()
+                                   currentIngredient: new Ingredient()
                                })}>
                         <IonIcon icon={closeCircleOutline}/>
                     </IonButton>

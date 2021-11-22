@@ -1,8 +1,7 @@
-import {ADD_MENU, IMPORT_DATA, INIT_MENU, REMOVE_MENU, UPDATE_INGREDIENT, UPDATE_MENU} from "../actions/actions";
+import {ADD_MENU, IMPORT_DATA, INIT_MENU, REMOVE_MENU, UPDATE_MENU} from "../actions/actions";
 import {InitialState, initialStateImpl} from "./index";
-import {setMenus} from '../services/storageService';
+import DICTIONARY, {setMenus} from '../services/storageService';
 import {FRIDAY, Menu, MONDAY, SATURDAY, SUNDAY, THURSDAY, TUESDAY, WEDNESDAY} from "../Models/Menu";
-import DICTIONARY from "../services/storageService";
 
 
 export function menuReducer(state: InitialState = initialStateImpl, action: any): InitialState {

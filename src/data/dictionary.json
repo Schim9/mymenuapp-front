@@ -48,9 +48,15 @@
     "section_page": {
       "PAGE_TITLE": "Rayons"
     },
+    "cloud_page": {
+      "TITLE": "Configuration Cloud",
+      "SERVER": "Adresse du serveur",
+      "IDENTIFIANT": "Identifiant",
+      "SAVE_BUTTON_LABEL": "ENREGISTRER"
+    },
     "navbar": {
       "HOME_PAGE_BUTTON_LABEL": "Page principale",
-      "ACCOUNT_BUTTON_LABEL": "Mon compte (bientôt)",
+      "CLOUD_BUTTON_LABEL": "Cloud",
       "DISH_BUTTON_LABEL": "Recettes",
       "INGREDIENT_BUTTON_LABEL": "Ingrédients",
       "SECTION_BUTTON_LABEL": "Gestion des rayons",
@@ -135,9 +141,15 @@
     "section_page": {
       "PAGE_TITLE": "Sections"
     },
+    "cloud_page": {
+      "TITLE": "Cloud configuration",
+      "SERVER": "Server address",
+      "IDENTIFIANT": "Identifier",
+      "SAVE_BUTTON_LABEL": "SAVE"
+    },
     "navbar": {
       "HOME_PAGE_BUTTON_LABEL": "Home page",
-      "ACCOUNT_BUTTON_LABEL": "My account (coming soon)",
+      "CLOUD_BUTTON_LABEL": "Cloud",
       "DISH_BUTTON_LABEL": "Dishes",
       "INGREDIENT_BUTTON_LABEL": "Ingredients",
       "SECTION_BUTTON_LABEL": "Sections",
@@ -222,9 +234,15 @@
     "section_page": {
       "PAGE_TITLE": "Rayonen geréieren"
     },
+    "cloud_page": {
+      "TITLE": "Cloud configuratioun",
+      "SERVER": "Server Adress",
+      "IDENTIFIANT": "Benotzernumm",
+      "SAVE_BUTTON_LABEL": "SPUEREN"
+    },
     "navbar": {
       "HOME_PAGE_BUTTON_LABEL": "Haapt Saït",
-      "ACCOUNT_BUTTON_LABEL": "Mäi Konto (geschwënn)",
+      "CLOUD_BUTTON_LABEL": "Cloud",
       "DISH_BUTTON_LABEL": "Rezepter",
       "INGREDIENT_BUTTON_LABEL": "Produkter",
       "SECTION_BUTTON_LABEL": "Rayonen geréieren",

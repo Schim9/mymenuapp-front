@@ -1,5 +1,3 @@
-import {Ingredient} from "./Ingredient";
-
 export class Dish {
 
     static checkDishJsonFormat(obj: any) : boolean  {
@@ -18,7 +16,7 @@ export class Dish {
         this.recipe = recipe;
     }
 
-    updateRecipe([... ingredients]: number[]) {
+    updateRecipe([...ingredients]: number[]) {
         for (let ing of ingredients){
             this.recipe.push(ing);
         }

@@ -1,5 +1,5 @@
 import React from "react";
-import {book, cart, cloudDownload, cloudUpload, home, menu, nutrition, person, restaurant, map} from "ionicons/icons";
+import {book, cart, cloud, cloudDownload, cloudUpload, home, map, menu, nutrition, restaurant} from "ionicons/icons";
 import {IonButton, IonButtons, IonIcon, IonItem, IonLabel, IonList, IonModal, IonTitle, IonToolbar} from "@ionic/react";
 import DICTIONARY, {exportData} from "../services/storageService";
 
@@ -49,9 +49,9 @@ class NavBar extends React.Component<NavBarProps> {
                         <IonIcon icon={map}/>
                         <IonLabel className="nav-element">{DICTIONARY.db.navbar.SECTION_BUTTON_LABEL}</IonLabel>
                     </IonItem>
-                    <IonItem disabled onClick={() => this.setState({displayModal: false})}>
-                        <IonIcon icon={person}/>
-                        <IonLabel className="nav-element">{DICTIONARY.db.navbar.ACCOUNT_BUTTON_LABEL}</IonLabel>
+                    <IonItem routerLink="/cloud" onClick={() => this.setState({displayModal: false})}>
+                        <IonIcon icon={cloud}/>
+                        <IonLabel className="nav-element">{DICTIONARY.db.navbar.CLOUD_BUTTON_LABEL}</IonLabel>
                     </IonItem>
                     <IonItem onClick={() => this.setState({displayModal: false}, () => exportData(this.props.displayToast))}>
                         <IonIcon icon={cloudUpload}/>

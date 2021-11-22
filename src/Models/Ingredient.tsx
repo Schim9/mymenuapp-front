@@ -1,5 +1,4 @@
 import {Unit} from "../services/storageService";
-import {Section} from "./Section";
 
 export class Ingredient {
 

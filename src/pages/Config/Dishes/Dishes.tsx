@@ -12,18 +12,17 @@ import {
     IonPage,
     IonSearchbar
 } from '@ionic/react';
-import React, {Component} from 'react';
+import React from 'react';
 import {connect} from 'react-redux';
 import {Dispatch} from 'redux';
 
 import './Dishes.css';
 
 import * as actions from "../../../actions/actions";
+import {addDish, displayToast, removeDish, updateDish} from "../../../actions/actions";
 import {IRootState} from "../../../reducers";
 import {ActionType} from "typesafe-actions";
 import {Dish} from "../../../Models/Dish";
-
-import {addDish, displayToast, removeDish, updateDish} from "../../../actions/actions";
 
 import {closeCircleOutline, create, save, trash} from 'ionicons/icons';
 
@@ -135,7 +134,7 @@ class DishesPage extends React.Component<ReduxType> {
     }
 
     renderDishes = () => {
-        if (this.props.dishList.length == 0) {
+        if (this.props.dishList.length === 0) {
             return (<IonLabel>{DICTIONARY.db.INFO_MESSAGE.NO_ELEMENT}</IonLabel>)
         } else {
             return (
@@ -235,7 +234,7 @@ class DishesPage extends React.Component<ReduxType> {
             <IonModal  isOpen={this.state.displayModal}
                       onDidDismiss={() => this.resetState()}>
                 <div className="flex-container">
-                    <img src={icon} height="40px"/>
+                    <img src={icon} height="40px" alt={icon}/>
                     <div className="title">{modalTitle}</div>
                 </div>
                 <IonInput placeholder={DICTIONARY.db.dish_page.NAME_PLACEHOLDER}

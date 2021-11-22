@@ -1,5 +1,5 @@
-import {IonContent, IonHeader, IonItem, IonLabel, IonList, IonPage} from '@ionic/react';
-import React, {Component} from 'react';
+import {IonContent, IonHeader, IonItem, IonList, IonPage} from '@ionic/react';
+import React from 'react';
 import {connect} from 'react-redux';
 import {Dispatch} from 'redux';
 
@@ -71,7 +71,7 @@ class ShoppingListPage extends React.Component<ReduxType> {
     composeShoppingMap = (): Map<number, Ingredient[]> => {
         let shoppingList = this.composeShoppingList();
         let shoppingMap = new Map<number, Ingredient[]>();
-        shoppingList.map(element => {
+        shoppingList.forEach(element => {
             let ingredient = this.props.ingredientList.filter(item => item.id === element)[0];
             if (ingredient.sectionId) {
                 let arrayTmp = shoppingMap.get(ingredient.id);
@@ -126,6 +126,8 @@ class ShoppingListPage extends React.Component<ReduxType> {
                                 if (shoppingMap.has(section.id)) {
                                     let ingList = shoppingMap.get(section.id) as Ingredient[];
                                     return (this.renderSectionContentList(ingList, section.id, section.name))
+                                } else {
+                                    return []
                                 }
                             }
                         )}

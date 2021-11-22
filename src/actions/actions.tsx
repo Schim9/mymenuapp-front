@@ -10,6 +10,8 @@ export const INIT_INGREDIENT = 'INIT_INGREDIENT';
 export const INIT_DISH = 'INIT_DISH';
 export const INIT_MENU = 'INIT_MENU';
 export const INIT_SECTION = 'INIT_SECTION';
+export const INIT_CLOUD_CONFIG = 'INIT_CLOUD_CONFIG';
+export const UPDATE_CLOUD_CONFIG = 'UPDATE_CLOUD_CONFIG';
 
 export const ADD_DISH = 'ADD_DISH';
 export const UPDATE_DISH = 'UPDATE_DISH';
@@ -66,6 +68,16 @@ export function prepareMenuList(element: Menu[]) {
         data: element
     }
 
+    return action;
+}
+
+export function prepareCloudConfiguration(serveurAddress: string, identifier: string) {
+    const action = {
+        type: INIT_CLOUD_CONFIG,
+        data: {
+            cloudServerAddress: serveurAddress,
+            cloudIdentifier: identifier}
+    }
     return action;
 }
 
@@ -176,6 +188,19 @@ export function hideToast() {
     const action = {
         type: HIDE_TOAST,
         data: {}
+    }
+    return action;
+}
+
+/**
+ * CLOUD CONFIG
+ */
+export function updateCloudConfiguration(serveurAddress: string, identifier: string) {
+    const action = {
+        type: UPDATE_CLOUD_CONFIG,
+        data: {
+            cloudServerAddress: serveurAddress,
+            cloudIdentifier: identifier}
     }
     return action;
 }

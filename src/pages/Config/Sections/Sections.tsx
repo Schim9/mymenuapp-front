@@ -1,5 +1,5 @@
 //React
-import React, {Component} from 'react';
+import React from 'react';
 //Redux
 import {connect} from "react-redux";
 import {Dispatch} from 'redux';
@@ -25,7 +25,7 @@ import {ActionType} from "typesafe-actions";
 import DICTIONARY from '../../../services/storageService';
 import NavBar from "../../../Components/NavBar";
 import {Section} from "../../../Models/Section";
-import {swapHorizontal, arrowBack, arrowForward} from "ionicons/icons";
+import {arrowBack, arrowForward, swapHorizontal} from "ionicons/icons";
 //Style
 import './Sections.css';
 
@@ -77,14 +77,14 @@ class SectionPage extends React.Component<ReduxType> {
         // by the reorder group
         let complete: Section[] = event.detail.complete( this.props.sectionList);
 
-        complete.map((element, index) => {
+        complete.forEach((element, index) => {
             element.order = index;
         })
         this.props.updateSections(complete);
     }
 
     renderSections = () => {
-        if (this.props.sectionList.length == 0) {
+        if (this.props.sectionList.length === 0) {
             return (<IonLabel>{DICTIONARY.db.INFO_MESSAGE.NO_ELEMENT}</IonLabel>)
         } else {
             return (

@@ -1,22 +1,19 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {connect} from 'react-redux';
 import {Dispatch} from 'redux';
 
 import * as actions from "../../../actions/actions";
 import {displayToast, importData} from "../../../actions/actions";
-import {IRootState} from "../../../reducers";
 import {ActionType} from "typesafe-actions";
-import {ERROR, INFO} from "../../../services/storageService";
+import DICTIONARY, {ERROR, INFO} from "../../../services/storageService";
 import {IonAlert, IonButton, IonContent, IonFooter, IonHeader, IonPage} from "@ionic/react";
 import NavBar from "../../../Components/NavBar";
 import {Ingredient} from "../../../Models/Ingredient";
 import {Dish} from "../../../Models/Dish";
 import {Menu} from "../../../Models/Menu";
-
-import DICTIONARY from "../../../services/storageService";
 import {Section} from "../../../Models/Section";
 
-const mapStateToProps = ({}: IRootState) => {
+const mapStateToProps = () => {
     return { };
 }
 
@@ -132,7 +129,7 @@ class ImportPage extends React.Component<ReduxType> {
                 </div>
             </IonContent>
             <IonFooter>
-                <IonButton disabled={this.state.version.trim().length==0}
+                <IonButton disabled={this.state.version.trim().length===0}
                             size="large"
                            className="home-button"
                            onClick={() => this.setState({displayAlert: true})}

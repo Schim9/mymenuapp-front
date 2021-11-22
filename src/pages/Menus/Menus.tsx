@@ -217,14 +217,14 @@ class MenusPage extends React.Component<ReduxType> {
                     this.resetState();
                 }}>
                 <div className="flex-container">
-                    <img src={icon} height="40px"/>
+                    <img src={icon} height="40px" alt={icon}/>
                     <div className="title">{DICTIONARY.db.menu_page.MODAL_CHOOSE}</div>
                 </div>
                 <IonList className="list-checkable-ingredient">
                     {menuElements
                         .sort((a, b) => a.name.localeCompare(b.name))
                         .map(item => {
-                            let key = "";
+                            let key;
                             if ((item as Dish).recipe) {
                                 key = "dish" + item.id;
                             } else {
