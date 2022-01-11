@@ -26,13 +26,16 @@ import MenusPage from "./pages/Menus/Menus";
 import ShoppingList from "./pages/ShoppingList/ShoppingList";
 import CloudPage from "./pages/Config/Cloud/Cloud";
 
-import DICTIONARY, {
-    getDishes,
+import {
     getCloudIdentifier,
+    getCloudServerAddress,
+    getDishes,
     getIngredients,
     getMenus,
     getSections,
-    getCloudServerAddress
+    setDishes,
+    setIngredients,
+    setMenus
 } from "./services/storageService";
 import {Dish} from "./Models/Dish";
 import {IRootState} from "./reducers";
@@ -49,8 +52,9 @@ import {
 import {connect} from "react-redux";
 import {Dispatch} from 'redux';
 import {Ingredient} from "./Models/Ingredient";
-import {FRIDAY, Menu, MONDAY, SATURDAY, SUNDAY, THURSDAY, TUESDAY, WEDNESDAY} from "./Models/Menu";
+import {Menu} from "./Models/Menu";
 import {Section} from "./Models/Section";
+import {callApi, HTTP_COMMAND} from "./services/callApiService";
 
 const mapStateToProps = ({notificationReducer}: IRootState) => {
     const {displayToast, toastMessage, toastType} = notificationReducer;
@@ -74,20 +78,49 @@ type ReduxType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispa
 class App extends React.Component<ReduxType> {
 
     componentDidMount() {
-        getIngredients().then(value => {
-                if (value === null) {
-                    value = [];
-                }
-                this.props.prepareIngredientList(value)
-            }
-        );
-        getDishes().then(value => {
-                if (value === null) {
-                    value = [];
-                }
-                this.props.prepareDishList(value)
-            }
-        );
+        // Get ingredients from API
+        callApi(HTTP_COMMAND.GET, 'ingredients', '')
+            .then(apiIngredients => {
+                // Save ingredients in localStorage
+                setIngredients(apiIngredients)
+                // Init cache
+                this.props.prepareIngredientList(apiIngredients)
+            }, (error => {
+                console.log('ERROR while getting ingredients', error)
+                // Get ingredients from LocalStorage
+                getIngredients()
+                    // Init cache
+                    .then(localStorageIngredients =>  this.props.prepareIngredientList(localStorageIngredients))
+            }))
+
+        callApi(HTTP_COMMAND.GET, 'dishes', '')
+            .then(apiDishes => {
+                // Save dishes in localStorage
+                setDishes(apiDishes)
+                // Init cache
+                this.props.prepareDishList(apiDishes)
+            }, (error => {
+                console.log('ERROR while getting dishes', error)
+                // Get dishes from LocalStorage
+                getDishes()
+                    // Init cache
+                    .then(localStorageDishes =>  this.props.prepareDishList(localStorageDishes))
+            }))
+        callApi(HTTP_COMMAND.GET, 'menus', '')
+            .then(apiMenus => {
+                // Save menus in localStorage
+                setMenus(apiMenus)
+                // Init cache
+                this.props.prepareMenuList(apiMenus)
+            }, (error => {
+                console.log('ERROR while getting menus', error)
+                // Get menus from LocalStorage
+                getMenus()
+                    // Init cache
+                    .then(localStorageMenus =>  this.props.prepareMenuList(localStorageMenus))
+            }))
+
+        // TODO Handle sections on API's side
         getSections().then(value => {
                 if (value === null) {
                     value = [
@@ -105,21 +138,7 @@ class App extends React.Component<ReduxType> {
                 this.props.prepareSectionList(value);
             }
         );
-        getMenus().then(value => {
-                if (value === null) {
-                    value = [
-                        new Menu(DICTIONARY.db.MONDAY, 1, MONDAY),
-                        new Menu(DICTIONARY.db.TUESDAY, 2, TUESDAY),
-                        new Menu(DICTIONARY.db.WEDNESDAY, 3, WEDNESDAY),
-                        new Menu(DICTIONARY.db.THURSDAY, 4, THURSDAY),
-                        new Menu(DICTIONARY.db.FRIDAY, 5, FRIDAY),
-                        new Menu(DICTIONARY.db.SATURDAY, 6, SATURDAY),
-                        new Menu(DICTIONARY.db.SUNDAY, 7, SUNDAY)
-                    ];
-                }
-                this.props.prepareMenuList(value)
-            }
-        );
+
         getCloudServerAddress().then(serverAddress => {
             getCloudIdentifier().then(identifier => {
                 this.props.prepareCloudConfiguration(serverAddress, identifier);

@@ -5,12 +5,14 @@ import {Dispatch} from 'redux';
 import * as actions from "../../../actions/actions";
 import {displayToast, updateCloudConfiguration} from "../../../actions/actions";
 import {ActionType} from "typesafe-actions";
-import DICTIONARY from "../../../services/storageService";
-import {IonButton, IonContent, IonFooter, IonHeader, IonInput, IonPage} from "@ionic/react";
+import DICTIONARY, {INFO, ERROR} from "../../../services/storageService";
+import { IonButton, IonContent, IonFooter, IonHeader, IonInput, IonPage} from "@ionic/react";
 import NavBar from "../../../Components/NavBar";
 //Style
 import './Cloud.css';
 import {IRootState} from "../../../reducers";
+
+import {testUrl} from "../../../services/callApiService";
 
 const mapStateToProps = ({configReducer}: IRootState) => {
     const { cloudServerAddress, cloudIdentifier } = configReducer
@@ -66,6 +68,11 @@ class CloudPage extends React.Component<ReduxType> {
                     onIonChange={(e) => this.setState({serverAddress: (e.target as HTMLInputElement).value})}
                     clearInput
                 />
+                <IonButton size="large"
+                           onClick={() => this.checkServerUrl()}
+                           expand='block'
+                           color="light">{DICTIONARY.db.cloud_page.TEST_BUTTON_LABEL}
+                </IonButton>
                 <h1>{DICTIONARY.db.cloud_page.IDENTIFIANT}</h1>
                 <IonInput
                     className="cloud-input"
@@ -84,11 +91,21 @@ class CloudPage extends React.Component<ReduxType> {
                                this.setState({displayAlert: true})
                            }}
                            expand='block'
-                           color="light">{DICTIONARY.db.cloud_page.SAVE_BUTTON_LABEL}</IonButton>
+                           color="light">{DICTIONARY.db.cloud_page.SAVE_BUTTON_LABEL}
+                </IonButton>
             </IonFooter>
         </IonPage>
     }
 
+    private checkServerUrl = () => {
+        testUrl(this.state.serverAddress).then(checkResult => {
+            if (checkResult) {
+                this.props.displayToast(INFO, DICTIONARY.db.INFO_MESSAGE.CLOUD_URL_IS_OK);
+            } else {
+                this.props.displayToast(ERROR, DICTIONARY.db.ERROR_MESSAGE.CLOUD_URL_IS_KO);
+            }
+        })
+    }
 }
 
 export default connect(mapStateToProps, {displayToast, updateCloudConfiguration})(CloudPage);

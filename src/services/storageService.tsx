@@ -60,7 +60,11 @@ export async function setIngredients(value: Ingredient[]): Promise<void> {
 
 export async function getIngredients(): Promise<Ingredient[]> {
     let newVar = await Storage.get({key: "ingredientList"}) as any;
-    return JSON.parse(newVar.value);
+    try {
+        return JSON.parse(newVar.value);
+    } catch (parseException) {
+        return [];
+    }
 }
 
 export async function setDishes(value: Dish[]): Promise<void> {
@@ -72,7 +76,11 @@ export async function setDishes(value: Dish[]): Promise<void> {
 
 export async function getDishes(): Promise<Dish[]> {
     let newVar = await Storage.get({key: "dishList"}) as any;
-    return JSON.parse(newVar.value);
+    try {
+        return JSON.parse(newVar.value);
+    } catch (parseException) {
+        return [];
+    }
 }
 
 export async function setSections(value: Section[]): Promise<void> {
@@ -84,7 +92,11 @@ export async function setSections(value: Section[]): Promise<void> {
 
 export async function getSections(): Promise<Section[]> {
     let newVar = await Storage.get({key: "sectionList"}) as any;
-    return JSON.parse(newVar.value);
+    try {
+        return JSON.parse(newVar.value);
+    } catch (parseException) {
+        return [];
+    }
 }
 
 export async function setMenus(value: Menu[]): Promise<void> {
@@ -96,7 +108,11 @@ export async function setMenus(value: Menu[]): Promise<void> {
 
 export async function getMenus(): Promise<Menu[]> {
     let newVar = await Storage.get({key: "menuList"}) as any;
-    return JSON.parse(newVar.value);
+    try {
+        return JSON.parse(newVar.value);
+    } catch (parseException) {
+        return [];
+    }
 }
 
 export async function exportData(callback: any): Promise<void> {

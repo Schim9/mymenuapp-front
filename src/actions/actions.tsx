@@ -1,9 +1,10 @@
 import {Ingredient} from "../Models/Ingredient";
 import {Dish} from "../Models/Dish";
-import {Menu} from "../Models/Menu";
+import {FRIDAY, Menu, MONDAY, SATURDAY, SUNDAY, THURSDAY, TUESDAY, WEDNESDAY} from "../Models/Menu";
 import {Section} from "../Models/Section";
+import DICTIONARY from "../services/storageService";
 
-
+// Deprecated
 export const IMPORT_DATA = 'IMPORT_DATA';
 
 export const INIT_INGREDIENT = 'INIT_INGREDIENT';
@@ -36,6 +37,10 @@ export const HIDE_TOAST = 'HIDE_TOAST';
  * APP INIT
  */
 export function prepareIngredientList(element: Ingredient[]) {
+    if (element === null) {
+        element = []
+    }
+
     const action = {
         type: INIT_INGREDIENT,
         data: element
@@ -45,6 +50,9 @@ export function prepareIngredientList(element: Ingredient[]) {
 }
 
 export function prepareDishList(element: Dish[]) {
+    if (element === null) {
+        element = []
+    }
     const action = {
         type: INIT_DISH,
         data: element
@@ -54,6 +62,9 @@ export function prepareDishList(element: Dish[]) {
 }
 
 export function prepareSectionList(element: Section[]) {
+    if (element === null) {
+        element = []
+    }
     const action = {
         type: INIT_SECTION,
         data: element
@@ -63,6 +74,18 @@ export function prepareSectionList(element: Section[]) {
 }
 
 export function prepareMenuList(element: Menu[]) {
+    if (element === null) {
+        element = [
+            new Menu(DICTIONARY.db.MONDAY, 1, MONDAY),
+            new Menu(DICTIONARY.db.TUESDAY, 2, TUESDAY),
+            new Menu(DICTIONARY.db.WEDNESDAY, 3, WEDNESDAY),
+            new Menu(DICTIONARY.db.THURSDAY, 4, THURSDAY),
+            new Menu(DICTIONARY.db.FRIDAY, 5, FRIDAY),
+            new Menu(DICTIONARY.db.SATURDAY, 6, SATURDAY),
+            new Menu(DICTIONARY.db.SUNDAY, 7, SUNDAY)
+        ];
+    }
+
     const action = {
         type: INIT_MENU,
         data: element
