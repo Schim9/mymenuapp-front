@@ -5,7 +5,6 @@ import {setIngredients} from "../services/storageService";
 import {callApi, HTTP_COMMAND} from "../services/callApiService";
 
 export function ingredientsReducer(state: InitialState = initialStateImpl, action: any): InitialState {
-    console.log('IngredientReducer', action);
     switch(action.type) {
         case INIT_INGREDIENT:
             return Object.assign({}, state, {ingredientList: action.data});

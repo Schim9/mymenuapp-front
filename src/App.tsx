@@ -18,6 +18,7 @@ import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
+import './theme/customStyle.css';
 import DishesPage from "./pages/Config/Dishes/Dishes";
 import ImportPage from "./pages/Config/Import/Import";
 import IngredientsPage from "./pages/Config/Ingredients/Ingredients";

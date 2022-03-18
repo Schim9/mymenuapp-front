@@ -22,7 +22,6 @@ export async function callApi(command: HTTP_COMMAND, endpoint: string, param?: a
                 );
                 return  await responseGet.json();
             case HTTP_COMMAND.POST:
-                console.log('param', JSON.stringify(param));
                 let responsePost = await fetch(`${serverAddress}/api/${endpoint}`, {
                     method: 'POST',
                     headers: {
@@ -30,7 +29,6 @@ export async function callApi(command: HTTP_COMMAND, endpoint: string, param?: a
                     },
                     body: JSON.stringify(param as Object)
                 });
-                console.log('POST', responsePost);
                 return  await responsePost.json();
             case HTTP_COMMAND.PUT:
                 let responsePut = await fetch(`${serverAddress}/api/${endpoint}`, {

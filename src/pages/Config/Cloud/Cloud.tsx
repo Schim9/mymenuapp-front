@@ -19,13 +19,6 @@ const mapStateToProps = ({configReducer}: IRootState) => {
     return {cloudServerAddress, cloudIdentifier};
 }
 
-//TODO
-// Test button for server address => healthcheck
-// Generate random uuid as an identifier
-// Backup prefered langage and store in ConfigReducer
-// Save each update on cloud
-// Implement fallback => in case cloud is unreachable
-// Handle config in import/export
 const mapDispatcherToProps = (dispatch: Dispatch<ActionType<typeof actions>>) => {
     return {
         updateCloudConfiguration: (address: string, identifier: string) => dispatch(actions.updateCloudConfiguration(address, identifier)),

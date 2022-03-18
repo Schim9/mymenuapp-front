@@ -122,9 +122,9 @@ class DishesPage extends React.Component<ReduxType> {
     checkDishIsNotPlanned = (): Menu[] => {
         let linkedMenu: Menu[] = [];
         this.props.menuList.forEach(menu => {
-            let plannedForLunch = menu.lunchMeal.some(menuItem => !!(menuItem as Dish).recipe &&
+            let plannedForLunch = menu.lunchMeals.some(menuItem => !!(menuItem as Dish).recipe &&
                 menuItem.id === this.state.currentDish.id);
-            let plannedForDinner = menu.dinnerMeal.some(menuItem => !!(menuItem as Dish).recipe &&
+            let plannedForDinner = menu.dinnerMeals.some(menuItem => !!(menuItem as Dish).recipe &&
                 menuItem.id === this.state.currentDish.id);
             if (plannedForLunch || plannedForDinner) {
                 linkedMenu.push(menu);

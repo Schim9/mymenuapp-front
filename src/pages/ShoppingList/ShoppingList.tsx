@@ -35,7 +35,7 @@ class ShoppingListPage extends React.Component<ReduxType> {
     composeShoppingList = (): number[] => {
         let shoppingList: number[] = [];
         this.props.menuList.forEach(menu => {
-            menu.lunchMeal.forEach(element => {
+            menu.lunchMeals.forEach(element => {
                 if ((element as Dish).recipe) {
                     (element as Dish).recipe.forEach(recipe => {
                         if (!shoppingList.some(item => item === recipe)) {
@@ -48,7 +48,7 @@ class ShoppingListPage extends React.Component<ReduxType> {
                     }
                 }
             });
-            menu.dinnerMeal.forEach(element => {
+            menu.dinnerMeals.forEach(element => {
                 if ((element as Dish).recipe) {
                     (element as Dish).recipe.forEach(recipe => {
                         if (!shoppingList.some(item => item === recipe)) {

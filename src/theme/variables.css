@@ -75,7 +75,6 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
 }
-
 body {
-  background: url('https://site-projet.kaminski.lu/assets/background/fond.png') no-repeat center/cover fixed;
+  background: url('/src/assets/background/fond.png') no-repeat center/cover fixed;
 }

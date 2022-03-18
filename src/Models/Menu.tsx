@@ -1,38 +1,26 @@
 import {Dish} from "./Dish";
 import {MenuItem} from "./MenuItem";
 
-
-export const MONDAY: string = "monday";
-export const TUESDAY: string = "monday";
-export const WEDNESDAY: string = "monday";
-export const THURSDAY: string = "monday";
-export const FRIDAY: string = "monday";
-export const SATURDAY: string = "monday";
-export const SUNDAY: string = "monday";
-
-
 export class Menu {
 
     static checkMenuJsonFormat(obj: any) : boolean  {
         return (Array.isArray(obj) &&
             !obj.some((element: any) => (!element.id || !element.name ||
-                (element.lunchMeal && !Dish.checkDishJsonFormat(element.lunchMeal)) ||
-                (element.dinnerMeal && !Dish.checkDishJsonFormat(element.dinnerMeal)) )))
+                (element.lunchMeals && !Dish.checkDishJsonFormat(element.lunchMeals)) ||
+                (element.dinnerMeals && !Dish.checkDishJsonFormat(element.dinnerMeals)) )))
     }
 
 
-    id: number = 0;
     name: string = '';
-    color: string = "";
-    lunchMeal: MenuItem[] = [];
-    dinnerMeal: MenuItem[] = [];
+    date: string = '';
+    lunchMeals: MenuItem[] = [];
+    dinnerMeals: MenuItem[] = [];
 
-    constructor(name: string = "", id: number = 0, color: string = "", lunchMeal: MenuItem[] = [], dinnerMeal: MenuItem[] = []) {
+    constructor(name: string = "", date: string = "", lunchMeals: MenuItem[] = [], dinnerMeals: MenuItem[] = []) {
         this.name = name;
-        this.id = id;
-        this.color = color;
-        this.lunchMeal = lunchMeal;
-        this.dinnerMeal = dinnerMeal;
+        this.date = date;
+        this.lunchMeals = lunchMeals;
+        this.dinnerMeals = dinnerMeals;
     }
 }
 Menu.prototype.toString = function menuToString() {
