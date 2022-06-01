@@ -20,7 +20,7 @@ export async function callApi(command: HTTP_COMMAND, endpoint: string, param?: a
                 let responseGet = await fetch(
                     `${serverAddress}/api/${endpoint}/${param}`
                 );
-                return  await responseGet.json();
+                return responseGet.json();
             case HTTP_COMMAND.POST:
                 let responsePost = await fetch(`${serverAddress}/api/${endpoint}`, {
                     method: 'POST',
@@ -29,7 +29,7 @@ export async function callApi(command: HTTP_COMMAND, endpoint: string, param?: a
                     },
                     body: JSON.stringify(param as Object)
                 });
-                return  await responsePost.json();
+                return responsePost.json();
             case HTTP_COMMAND.PUT:
                 let responsePut = await fetch(`${serverAddress}/api/${endpoint}`, {
                     method: 'PUT',
@@ -38,7 +38,7 @@ export async function callApi(command: HTTP_COMMAND, endpoint: string, param?: a
                     },
                     body: JSON.stringify(param as Object)
                 });
-                return  await responsePut.json();
+                return responsePut.json();
             case HTTP_COMMAND.DELETE:
                 let responseDelete = await fetch(`${serverAddress}/api/${endpoint}`, {
                     method: 'DELETE',
@@ -47,7 +47,7 @@ export async function callApi(command: HTTP_COMMAND, endpoint: string, param?: a
                     },
                     body: JSON.stringify(param as Object)
                 });
-                return  await responseDelete.json();
+                return responseDelete.json();
             default:
                 return Promise.reject(`Unknown HTTP Command: ${command}`);
         }

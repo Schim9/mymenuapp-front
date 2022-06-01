@@ -195,7 +195,7 @@ class MenusPage extends React.Component<ReduxType> {
                             <div key={item.date} ref={item.date === currentDateString ? this.input : null}>
                                 <IonItem
                                     className="menu-header"
-                                    color="light"
+                                    color={item.name.toLowerCase()}
                                     onClick={() => {
                                         let updatedMap = this.state.displayMenu;
                                         updatedMap.set(item.date,  !this.state.displayMenu.get(item.date));

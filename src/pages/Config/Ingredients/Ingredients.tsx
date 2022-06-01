@@ -22,6 +22,9 @@ import {
 //Style
 import './Ingredients.css';
 
+//Service
+import {callApi, HTTP_COMMAND} from "../../../services/callApiService";
+
 import * as actions from "../../../actions/actions";
 import {addIngredient, displayToast, removeIngredient, updateIngredient} from "../../../actions/actions";
 import {IRootState} from "../../../reducers";
@@ -87,9 +90,22 @@ class IngredientsPage extends React.Component<ReduxType> {
             } else {
                 let newElement = new Ingredient(newLabel,
                     this.props.ingredientList.length + 1, ingredientSectionTmp)
-                this.props.addIngredient(newElement);
-                this.props.displayToast(INFO, DICTIONARY.db.INFO_MESSAGE.ELEMENT_CREATED)
-                this.resetState();
+                callApi(HTTP_COMMAND.POST, 'ingredients', newElement)
+                    .then(response => {
+                        console.log('ingredient created', response);
+                        return response;
+                    })
+                    .then(processedData => {
+                        console.log('newElement', newElement);
+                        newElement.id = processedData;
+                        console.log('element added', newElement);
+                        this.props.addIngredient(newElement);
+                    })
+                    .then(() => {
+                        this.props.displayToast(INFO, DICTIONARY.db.INFO_MESSAGE.ELEMENT_CREATED);
+                        this.resetState();
+                    })
+                    .catch(err => console.log('error', err));
             }
         }
     }
@@ -230,7 +246,7 @@ class IngredientsPage extends React.Component<ReduxType> {
 
                 <IonItem>
                     <IonLabel>Section</IonLabel>
-                    <IonSelect  value={ingredientSectionTmp?.toString()} onIonChange={val => ingredientSectionTmp = Number((val.target as HTMLInputElement).value)}>
+                    <IonSelect value={ingredientSectionTmp?.toString()} onIonChange={val => ingredientSectionTmp = Number((val.target as HTMLInputElement).value)}>
                         <IonSelectOption key={0} value="0">Undefined</IonSelectOption>
                         {
                             this.props.sectionList.map(section =>

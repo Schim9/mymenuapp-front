@@ -2,13 +2,15 @@ ion-content{
     --background: none;
     --valign: middle;
 }
+.menu-header {
+    opacity: 50%;
+}
 
 .menu-modal {
     background: rgba(0,0,0,0.5);
     padding: 30% 10%;
     --border-radius: 8px;
 }
-
 
 .flex-menu-container {
     display: flex;

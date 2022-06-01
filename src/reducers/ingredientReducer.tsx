@@ -13,6 +13,7 @@ export function ingredientsReducer(state: InitialState = initialStateImpl, actio
             return Object.assign({}, state, {ingredientList: action.data.ingredients });
         case ADD_INGREDIENT:
             state.ingredientList.push(action.data)
+            // Call API in service
             callApi(HTTP_COMMAND.POST, 'ingredients', action.data);
             // TODO Handle exceptions
             setIngredients(state.ingredientList);

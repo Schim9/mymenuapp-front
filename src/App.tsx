@@ -1,7 +1,7 @@
 import React from 'react';
 import {Redirect, Route} from 'react-router-dom';
 import {IonApp, IonRouterOutlet, IonToast} from '@ionic/react';
-import {IonReactRouter} from '@ionic/react-router';
+import {IonReactHashRouter} from '@ionic/react-router';
 import Home from './pages/Home/Home';
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -153,11 +153,11 @@ class App extends React.Component<ReduxType> {
     render() {
         return (
             <IonApp>
-                <IonReactRouter>
+                <IonReactHashRouter>
                     <IonRouterOutlet>
                         <Route path="/home" component={Home} exact={true}/>
-                        <Route path="/ingredients" component={IngredientsPage} exact={true}/>
-                        <Route path="/dishes" component={DishesPage} exact={true}/>
+                        <Route path="/ingredients" component={IngredientsPage} strict={false} exact={false}/>
+                        <Route path="/dishes" component={DishesPage} strict={false} exact={false}/>
                         <Route path="/section" component={SectionPage} exact={true}/>
                         <Route path="/menu" component={MenusPage} exact={true}/>
                         <Route path="/list" component={ShoppingList} exact={true}/>
@@ -165,7 +165,7 @@ class App extends React.Component<ReduxType> {
                         <Route path="/cloud" component={CloudPage} exact={true}/>
                         <Route exact path="/" render={() => <Redirect to="/home"/>}/>
                     </IonRouterOutlet>
-                </IonReactRouter>
+                </IonReactHashRouter>
                 <IonToast
                      isOpen={this.props.displayToast}
                      onDidDismiss={this.props.hideToast}
