@@ -92,20 +92,17 @@ class IngredientsPage extends React.Component<ReduxType> {
                     this.props.ingredientList.length + 1, ingredientSectionTmp)
                 callApi(HTTP_COMMAND.POST, 'ingredients', newElement)
                     .then(response => {
-                        console.log('ingredient created', response);
-                        return response;
-                    })
-                    .then(processedData => {
-                        console.log('newElement', newElement);
-                        newElement.id = processedData;
-                        console.log('element added', newElement);
+                        newElement.id = response.id;
                         this.props.addIngredient(newElement);
                     })
                     .then(() => {
                         this.props.displayToast(INFO, DICTIONARY.db.INFO_MESSAGE.ELEMENT_CREATED);
                         this.resetState();
                     })
-                    .catch(err => console.log('error', err));
+                    .catch(err => {
+                        // TODO Handle error
+                        console.log('error', err)
+                    });
             }
         }
     }
@@ -114,9 +111,18 @@ class IngredientsPage extends React.Component<ReduxType> {
         console.log("ingredientSectionTmp", ingredientSectionTmp);
         let newElement = new Ingredient(newLabel,
             this.state.currentIngredient.id, ingredientSectionTmp)
-        this.props.updateIngredient(newElement);
-        this.props.displayToast(INFO, DICTIONARY.db.INFO_MESSAGE.CHANGE_APPLIED)
-        this.resetState()
+        callApi(HTTP_COMMAND.DELETE, 'ingredients', this.state.currentIngredient)
+            .then(() => {
+                this.props.updateIngredient(newElement);
+            })
+            .then(() => {
+                this.props.displayToast(INFO, DICTIONARY.db.INFO_MESSAGE.CHANGE_APPLIED)
+                this.resetState()
+            })
+            .catch(err => {
+                // TODO Handle error
+                console.log('error', err)
+            });
     }
 
     handleDeleteIngredient = () => {
@@ -127,9 +133,18 @@ class IngredientsPage extends React.Component<ReduxType> {
         } else if (listLinkMenu.length > 0) {
             this.props.displayToast(ERROR, DICTIONARY.db.ERROR_MESSAGE.VALUE_ALREADY_PLANNED + listLinkMenu.toString());
         } else {
-            this.props.removeIngredient(this.state.currentIngredient);
-            this.props.displayToast(INFO, DICTIONARY.db.INFO_MESSAGE.ELEMENT_DELETED)
-            this.resetState()
+            callApi(HTTP_COMMAND.DELETE, 'ingredients', this.state.currentIngredient)
+                .then(() => {
+                    this.props.removeIngredient(this.state.currentIngredient);
+                })
+                .then(() => {
+                    this.props.displayToast(INFO, DICTIONARY.db.INFO_MESSAGE.ELEMENT_DELETED)
+                    this.resetState();
+                })
+                .catch(err => {
+                    // TODO Handle error
+                    console.log('error', err)
+                });
         }
     }
 
