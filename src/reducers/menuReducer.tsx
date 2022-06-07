@@ -1,7 +1,6 @@
 import {ADD_MENU, IMPORT_DATA, INIT_MENU, REMOVE_MENU, UPDATE_MENU} from "../actions/actions";
 import {InitialState, initialStateImpl} from "./index";
 import {setMenus} from '../services/storageService';
-import {callApi, HTTP_COMMAND} from "../services/callApiService";
 
 
 export function menuReducer(state: InitialState = initialStateImpl, action: any): InitialState {
