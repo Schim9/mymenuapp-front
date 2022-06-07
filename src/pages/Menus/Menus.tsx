@@ -25,9 +25,10 @@ import {Menu} from "../../Models/Menu";
 import {caretDownOutline, caretUpOutline, closeCircleOutline, save} from "ionicons/icons";
 import {Dish} from "../../Models/Dish";
 
-import DICTIONARY, {DINNER, INFO, LUNCH} from '../../services/storageService'
+import DICTIONARY, {DINNER, ERROR, INFO, LUNCH} from '../../services/storageService'
 import NavBar from "../../Components/NavBar";
 import {MenuItem} from "../../Models/MenuItem";
+import {callApi, HTTP_COMMAND} from "../../services/callApiService";
 
 const mapStateToProps = ({menuReducer, dishReducer, ingredientReducer}: IRootState) => {
     const {menuList} = menuReducer;
@@ -117,9 +118,18 @@ class MenusPage extends React.Component<ReduxType> {
             (this.state.currentMenuDetail === LUNCH ? this.state.currentMeal : this.state.currentMenu.lunchMeals),
             (this.state.currentMenuDetail === DINNER ? this.state.currentMeal : this.state.currentMenu.dinnerMeals)
         );
-        this.props.updateMenu(newMenu);
-        this.props.displayToast(INFO, DICTIONARY.db.INFO_MESSAGE.CHANGE_APPLIED)
-        this.resetState()
+        callApi(HTTP_COMMAND.PUT, 'menus', newMenu)
+            .then(() => {
+                this.props.updateMenu(newMenu);
+            })
+            .then(() => {
+                this.props.displayToast(INFO, DICTIONARY.db.INFO_MESSAGE.CHANGE_APPLIED)
+                this.resetState()
+            })
+            .catch(err => {
+                console.log('error', err)
+                this.props.displayToast(ERROR, DICTIONARY.db.ERROR_MESSAGE.OPERATION_FAILED);
+            });
     }
 
     displayLunchMenu = (item: Menu) => {

@@ -74,7 +74,8 @@
       "INVALID_INGREDIENT_LIST": "Erreur lors de la lecture de la liste d'ingrédient",
       "INVALID_DISH_LIST": "Erreur lors de la lecture de la liste de recette",
       "INVALID_MENU_LIST": "Erreur lors de la lecture des menus",
-      "CLOUD_URL_IS_KO": "Impossible de contacter le serveur"
+      "CLOUD_URL_IS_KO": "Impossible de contacter le serveur",
+      "OPERATION_FAILED": "L'opération a échoué"
     },
     "INFO_MESSAGE" : {
       "ELEMENT_CREATED": "L'élément a été créé",
@@ -170,7 +171,8 @@
       "INVALID_INGREDIENT_LIST": "Error while reading ingredient list",
       "INVALID_DISH_LIST": "Error while reading recipe list",
       "INVALID_MENU_LIST": "Error while reading menus",
-      "CLOUD_URL_IS_KO": "Could not reach the server"
+      "CLOUD_URL_IS_KO": "Could not reach the server",
+      "OPERATION_FAILED": "Operation has failed"
     },
     "INFO_MESSAGE" : {
       "ELEMENT_CREATED": "Element has been created",
@@ -266,7 +268,8 @@
       "INVALID_INGREDIENT_LIST": "Error while reading ingredient list",
       "INVALID_DISH_LIST": "Error while reading recipe list",
       "INVALID_MENU_LIST": "Error while reading menus",
-      "CLOUD_URL_IS_KO": "LU-Impossible de contacter le serveur"
+      "CLOUD_URL_IS_KO": "LU-Impossible de contacter le serveur",
+      "OPERATION_FAILED": "LU-L'opération a échoué"
     },
     "INFO_MESSAGE" : {
       "ELEMENT_CREATED": "Element has been created",

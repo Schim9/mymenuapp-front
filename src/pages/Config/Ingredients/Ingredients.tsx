@@ -102,6 +102,7 @@ class IngredientsPage extends React.Component<ReduxType> {
                     .catch(err => {
                         // TODO Handle error
                         console.log('error', err)
+                        this.props.displayToast(ERROR, DICTIONARY.db.ERROR_MESSAGE.OPERATION_FAILED);
                     });
             }
         }
@@ -111,7 +112,7 @@ class IngredientsPage extends React.Component<ReduxType> {
         console.log("ingredientSectionTmp", ingredientSectionTmp);
         let newElement = new Ingredient(newLabel,
             this.state.currentIngredient.id, ingredientSectionTmp)
-        callApi(HTTP_COMMAND.DELETE, 'ingredients', this.state.currentIngredient)
+        callApi(HTTP_COMMAND.PUT, 'ingredients', this.state.currentIngredient)
             .then(() => {
                 this.props.updateIngredient(newElement);
             })
@@ -122,6 +123,7 @@ class IngredientsPage extends React.Component<ReduxType> {
             .catch(err => {
                 // TODO Handle error
                 console.log('error', err)
+                this.props.displayToast(ERROR, DICTIONARY.db.ERROR_MESSAGE.OPERATION_FAILED);
             });
     }
 
@@ -144,6 +146,7 @@ class IngredientsPage extends React.Component<ReduxType> {
                 .catch(err => {
                     // TODO Handle error
                     console.log('error', err)
+                    this.props.displayToast(ERROR, DICTIONARY.db.ERROR_MESSAGE.OPERATION_FAILED);
                 });
         }
     }

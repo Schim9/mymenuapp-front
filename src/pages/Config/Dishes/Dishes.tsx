@@ -29,6 +29,7 @@ import {closeCircleOutline, create, save, trash} from 'ionicons/icons';
 import DICTIONARY, {ERROR, INFO} from '../../../services/storageService';
 import NavBar from "../../../Components/NavBar";
 import {Menu} from "../../../Models/Menu";
+import {callApi, HTTP_COMMAND} from "../../../services/callApiService";
 
 const mapStateToProps = ({ingredientReducer, dishReducer, menuReducer}: IRootState) => {
     const {ingredientList} = ingredientReducer;
@@ -92,9 +93,19 @@ class DishesPage extends React.Component<ReduxType> {
                 this.props.displayToast(ERROR, DICTIONARY.db.ERROR_MESSAGE.VALUE_ALREADY_EXIST);
             } else {
                 let newDish = new Dish(dishName, this.props.dishList.length + 1, this.state.currentDish.recipe);
-                this.props.addDish(newDish);
-                this.props.displayToast(INFO, DICTIONARY.db.INFO_MESSAGE.ELEMENT_CREATED);
-                this.resetState();
+                callApi(HTTP_COMMAND.POST, 'dishes', newDish)
+                    .then(response => {
+                        this.props.addDish(newDish)
+                    })
+                    .then(() => {
+                        this.props.displayToast(INFO, DICTIONARY.db.INFO_MESSAGE.ELEMENT_CREATED)
+                        this.resetState();
+                    })
+                    .catch(err => {
+                        // TODO Handle error
+                        console.log('error', err)
+                        this.props.displayToast(ERROR, DICTIONARY.db.ERROR_MESSAGE.OPERATION_FAILED)
+                    });
             }
         }
     }
@@ -103,9 +114,19 @@ class DishesPage extends React.Component<ReduxType> {
         let newElement = new Dish(newDishName,
             this.state.currentDish.id,
             this.state.currentDish.recipe)
-        this.props.updateDish(newElement);
-        this.props.displayToast(INFO, DICTIONARY.db.INFO_MESSAGE.CHANGE_APPLIED)
-        this.resetState()
+        callApi(HTTP_COMMAND.PUT, 'dishes', newElement)
+            .then(() => {
+                this.props.updateDish(newElement);
+            })
+            .then(() => {
+                this.props.displayToast(INFO, DICTIONARY.db.INFO_MESSAGE.CHANGE_APPLIED)
+                this.resetState()
+            })
+            .catch(err => {
+                // TODO Handle error
+                console.log('error', err)
+                this.props.displayToast(ERROR, DICTIONARY.db.ERROR_MESSAGE.OPERATION_FAILED)
+            });
     }
 
     handleDeleteDish = () => {
@@ -113,9 +134,19 @@ class DishesPage extends React.Component<ReduxType> {
         if (listLinkMenu.length > 0) {
             this.props.displayToast(ERROR, DICTIONARY.db.ERROR_MESSAGE.VALUE_ALREADY_PLANNED + listLinkMenu.toString());
         } else {
-            this.props.removeDish(this.state.currentDish);
-            this.props.displayToast(INFO, DICTIONARY.db.INFO_MESSAGE.ELEMENT_DELETED);
-            this.resetState();
+            callApi(HTTP_COMMAND.DELETE, 'dishes', this.state.currentDish)
+                .then(() => {
+                    this.props.removeDish(this.state.currentDish);
+                })
+                .then(() => {
+                    this.props.displayToast(INFO, DICTIONARY.db.INFO_MESSAGE.ELEMENT_DELETED);
+                    this.resetState();
+                })
+                .catch(err => {
+                    // TODO Handle error
+                    console.log('error', err)
+                    this.props.displayToast(ERROR, DICTIONARY.db.ERROR_MESSAGE.OPERATION_FAILED);
+                });
         }
     }
 
@@ -177,7 +208,6 @@ class DishesPage extends React.Component<ReduxType> {
                 </IonList>
             )
         } else {
-            console.log("currentDish==", this.state.currentDish);
             return (
                 <IonList>
                     {this.props.ingredientList

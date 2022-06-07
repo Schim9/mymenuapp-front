@@ -20,9 +20,6 @@ export function menuReducer(state: InitialState = initialStateImpl, action: any)
             let foundElement = state.menuList.findIndex(element => element.date === action.data.date);
             let newList = Object.assign([], state.menuList, {[foundElement]: action.data});
             setMenus(newList);
-            // TODO Call API to update menu
-            callApi(HTTP_COMMAND.PUT, 'menus', action.data);
-            // TODO Handle exceptions
             return Object.assign({}, state, {menuList: newList });
         case ADD_MENU:
             // No creation
