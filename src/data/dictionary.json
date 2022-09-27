@@ -84,6 +84,7 @@
       "ELEMENT_DELETED": "L'élément a été supprimé",
       "NO_ELEMENT": "Oups, votre liste est vide",
       "EXPORT_DONE": "L'export s'est déroulé correctement",
+      "SYNC_IN_PROGRESS": "Synchronisation en cours",
       "CLOUD_URL_IS_OK": "Le serveur a bien répondu"
     },
     "WARNING_MESSAGE": {
@@ -182,6 +183,7 @@
       "ELEMENT_DELETED": "Element has been removed",
       "NO_ELEMENT": "Oops, it seems like your list is empty",
       "EXPORT_DONE": "Export successful",
+      "SYNC_IN_PROGRESS": "Synchronisation in progress",
       "CLOUD_URL_IS_OK": "EN-Le serveur a bien répondu"
     },
     "WARNING_MESSAGE": {
@@ -278,8 +280,9 @@
       "ELEMENT_CREATED": "Element has been created",
       "CHANGE_APPLIED": "Your change has been applied",
       "ELEMENT_DELETED": "Element has been removed",
-      "NO_ELEMENT": "Oops, it seems like your list is empty",
-      "EXPORT_DONE": "Export successful",
+      "NO_ELEMENT": "LU-Oops, it seems like your list is empty",
+      "EXPORT_DONE": "LU-Export successful",
+      "SYNC_IN_PROGRESS": "LU-Synchronisation en cours",
       "CLOUD_URL_IS_OK": "LU-Le serveur a bien répondu"
     },
     "WARNING_MESSAGE": {

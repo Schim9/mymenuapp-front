@@ -203,15 +203,16 @@ export async function syncDataFromBack(
     getSections().then(value => {
             if (value === null) {
                 value = [
-                    new Section("Conserves", 0, 1),
-                    new Section("Pâtes et riz", 1, 2),
-                    new Section("Fruits et Légumes", 2, 3),
-                    new Section("Petit déjeuner", 3, 4),
-                    new Section("Surgelés", 4, 5),
-                    new Section("Rayon frais", 5, 6),
-                    new Section("Liquides", 6, 7),
-                    new Section("Viandes et poissons", 7, 8),
-                    new Section("Epice", 8, 9)
+                    // 0 stands for "no section" in "Ingredients" page
+                    new Section("Conserves", 1, 1),
+                    new Section("Pâtes et riz", 2, 2),
+                    new Section("Fruits et Légumes", 3, 3),
+                    new Section("Petit déjeuner", 4, 4),
+                    new Section("Surgelés", 5, 5),
+                    new Section("Rayon frais", 6, 6),
+                    new Section("Liquides", 7, 7),
+                    new Section("Viandes et poissons", 8, 8),
+                    new Section("Epice", 9, 9)
                 ];
             }
             prepareSectionListAction(value);

@@ -125,7 +125,7 @@ class CloudPage extends React.Component<ReduxType> {
             this.props.prepareDishList,
             this.props.prepareMenuList,
             this.props.prepareSectionList,
-        );
+        ).then(() => this.props.displayToast(INFO, DICTIONARY.db.INFO_MESSAGE.SYNC_IN_PROGRESS));
     }
 }
 
