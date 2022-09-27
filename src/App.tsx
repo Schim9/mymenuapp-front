@@ -18,7 +18,6 @@ import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
-import './theme/customStyle.css';
 import DishesPage from "./pages/Config/Dishes/Dishes";
 import ImportPage from "./pages/Config/Import/Import";
 import IngredientsPage from "./pages/Config/Ingredients/Ingredients";
@@ -30,13 +29,7 @@ import CloudPage from "./pages/Config/Cloud/Cloud";
 import {
     getCloudIdentifier,
     getCloudServerAddress,
-    getDishes,
-    getIngredients,
-    getMenus,
-    getSections,
-    setDishes,
-    setIngredients,
-    setMenus
+    syncDataFromBack
 } from "./services/storageService";
 import {Dish} from "./Models/Dish";
 import {IRootState} from "./reducers";
@@ -55,7 +48,6 @@ import {Dispatch} from 'redux';
 import {Ingredient} from "./Models/Ingredient";
 import {Menu} from "./Models/Menu";
 import {Section} from "./Models/Section";
-import {callApi, HTTP_COMMAND} from "./services/callApiService";
 
 const mapStateToProps = ({notificationReducer}: IRootState) => {
     const {displayToast, toastMessage, toastType} = notificationReducer;
@@ -79,74 +71,20 @@ type ReduxType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispa
 class App extends React.Component<ReduxType> {
 
     componentDidMount() {
-        // Get ingredients from API
-        callApi(HTTP_COMMAND.GET, 'ingredients', '')
-            .then(apiIngredients => {
-                // Save ingredients in localStorage
-                setIngredients(apiIngredients)
-                // Init cache
-                this.props.prepareIngredientList(apiIngredients)
-            }, (error => {
-                console.log('ERROR while getting ingredients', error)
-                // Get ingredients from LocalStorage
-                getIngredients()
-                    // Init cache
-                    .then(localStorageIngredients =>  this.props.prepareIngredientList(localStorageIngredients))
-            }))
-
-        callApi(HTTP_COMMAND.GET, 'dishes', '')
-            .then(apiDishes => {
-                // Save dishes in localStorage
-                setDishes(apiDishes)
-                // Init cache
-                this.props.prepareDishList(apiDishes)
-            }, (error => {
-                console.log('ERROR while getting dishes', error)
-                // Get dishes from LocalStorage
-                getDishes()
-                    // Init cache
-                    .then(localStorageDishes =>  this.props.prepareDishList(localStorageDishes))
-            }))
-        callApi(HTTP_COMMAND.GET, 'menus', '')
-            .then(apiMenus => {
-                // Save menus in localStorage
-                setMenus(apiMenus)
-                // Init cache
-                this.props.prepareMenuList(apiMenus)
-            }, (error => {
-                console.log('ERROR while getting menus', error)
-                // Get menus from LocalStorage
-                getMenus()
-                    // Init cache
-                    .then(localStorageMenus =>  this.props.prepareMenuList(localStorageMenus))
-            }))
-
-        // TODO Handle sections on API's side
-        getSections().then(value => {
-                if (value === null) {
-                    value = [
-                        new Section("Conserves", 0, 1),
-                        new Section("Pâtes et riz", 1, 2),
-                        new Section("Fruits et Légumes", 2, 3),
-                        new Section("Petit déjeuner", 3, 4),
-                        new Section("Surgelés", 4, 5),
-                        new Section("Rayon frais", 5, 6),
-                        new Section("Liquides", 6, 7),
-                        new Section("Viandes et poissons", 7, 8),
-                        new Section("Epice", 8, 9)
-                    ];
-                }
-                this.props.prepareSectionList(value);
-            }
-        );
 
         getCloudServerAddress().then(serverAddress => {
-            getCloudIdentifier().then(identifier => {
-                this.props.prepareCloudConfiguration(serverAddress, identifier);
-            })
+                getCloudIdentifier().then(identifier => {
+                    this.props.prepareCloudConfiguration(serverAddress, identifier);
+                })
             }
         );
 
+        syncDataFromBack(
+            this.props.prepareIngredientList,
+            this.props.prepareDishList,
+            this.props.prepareMenuList,
+            this.props.prepareSectionList,
+        )
     }
 
 

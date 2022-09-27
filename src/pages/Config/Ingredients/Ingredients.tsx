@@ -264,8 +264,10 @@ class IngredientsPage extends React.Component<ReduxType> {
 
                 <IonItem>
                     <IonLabel>Section</IonLabel>
-                    <IonSelect value={ingredientSectionTmp?.toString()} onIonChange={val => ingredientSectionTmp = Number((val.target as HTMLInputElement).value)}>
-                        <IonSelectOption key={0} value="0">Undefined</IonSelectOption>
+                    <IonSelect value={ingredientSectionTmp?.toString()} onIonChange={
+                        val => ingredientSectionTmp = Number((val.target as HTMLInputElement).value)
+                    }>
+                        <IonSelectOption key={0} value="0">{DICTIONARY.db.shoppinglist_page.UNCATEGORIZED}</IonSelectOption>
                         {
                             this.props.sectionList.map(section =>
                                 <IonSelectOption key={section.id} value={""+section.id}>{section.name}</IonSelectOption>

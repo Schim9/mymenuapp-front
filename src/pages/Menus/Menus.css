@@ -3,7 +3,7 @@ ion-content{
     --valign: middle;
 }
 .menu-header {
-    opacity: 50%;
+    opacity: 0.5;
 }
 
 .menu-modal {

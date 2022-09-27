@@ -7,6 +7,7 @@ import {Storage} from '@capacitor/storage';
 
 import {FileSharer} from '@byteowls/capacitor-filesharer';
 import {Section} from "../Models/Section";
+import {callApi, HTTP_COMMAND} from "./callApiService";
 
 export const ERROR: string = "danger";
 export const INFO: string = "success";
@@ -147,6 +148,75 @@ export async function exportData(callback: any): Promise<void> {
                 callback("cool ça marche", INFO);
             }).catch(() => callback("Ca marche pas", ERROR));
         });
+}
+
+export async function syncDataFromBack(
+    prepareIngredientListAction: any,
+    prepareDishListAction: any,
+    prepareMenuListAction: any,
+    prepareSectionListAction: any
+): Promise<any> {
+
+    // Get ingredients from API
+    callApi(HTTP_COMMAND.GET, 'ingredients', '')
+        .then(apiIngredients => {
+            // Save ingredients in localStorage
+            setIngredients(apiIngredients)
+            // Init cache
+            prepareIngredientListAction(apiIngredients)
+        }, (error => {
+            console.log('ERROR while getting ingredients', error)
+            // Get ingredients from LocalStorage
+            getIngredients()
+                // Init cache
+                .then(localStorageIngredients =>  prepareIngredientListAction(localStorageIngredients))
+        }))
+
+    callApi(HTTP_COMMAND.GET, 'dishes', '')
+        .then(apiDishes => {
+            // Save dishes in localStorage
+            setDishes(apiDishes)
+            // Init cache
+            prepareDishListAction(apiDishes)
+        }, (error => {
+            console.log('ERROR while getting dishes', error)
+            // Get dishes from LocalStorage
+            getDishes()
+                // Init cache
+                .then(localStorageDishes =>  prepareDishListAction(localStorageDishes))
+        }))
+    callApi(HTTP_COMMAND.GET, 'menus', '')
+        .then(apiMenus => {
+            // Save menus in localStorage
+            setMenus(apiMenus)
+            // Init cache
+            prepareMenuListAction(apiMenus)
+        }, (error => {
+            console.log('ERROR while getting menus', error)
+            // Get menus from LocalStorage
+            getMenus()
+                // Init cache
+                .then(localStorageMenus =>  prepareMenuListAction(localStorageMenus))
+        }))
+
+    // TODO Handle sections on API's side
+    getSections().then(value => {
+            if (value === null) {
+                value = [
+                    new Section("Conserves", 0, 1),
+                    new Section("Pâtes et riz", 1, 2),
+                    new Section("Fruits et Légumes", 2, 3),
+                    new Section("Petit déjeuner", 3, 4),
+                    new Section("Surgelés", 4, 5),
+                    new Section("Rayon frais", 5, 6),
+                    new Section("Liquides", 6, 7),
+                    new Section("Viandes et poissons", 7, 8),
+                    new Section("Epice", 8, 9)
+                ];
+            }
+            prepareSectionListAction(value);
+        }
+    );
 }
 
 class StorageService {

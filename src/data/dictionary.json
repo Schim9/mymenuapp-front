@@ -52,6 +52,7 @@
       "TITLE": "Configuration Cloud",
       "SERVER": "Adresse du serveur",
       "IDENTIFIANT": "Identifiant",
+      "SYNC_BUTTON_LABEL": "Synchroniser les données",
       "TEST_BUTTON_LABEL": "Tester l'adresse du server",
       "SAVE_BUTTON_LABEL": "ENREGISTRER"
     },
@@ -149,6 +150,7 @@
       "TITLE": "Cloud configuration",
       "SERVER": "Server address",
       "IDENTIFIANT": "Identifier",
+      "SYNC_BUTTON_LABEL": "Synchronize data",
       "TEST_BUTTON_LABEL": "Check server address",
       "SAVE_BUTTON_LABEL": "SAVE"
     },
@@ -203,7 +205,7 @@
     },
     "shoppinglist_page": {
       "PAGE_TITLE": "D'Akaafslëcht",
-      "UNCATEGORIZED": "Uncategorised"
+      "UNCATEGORIZED": "LU-Uncategorised"
     },
     "ingredient_page": {
       "PAGE_TITLE": "Produkter",
@@ -246,6 +248,7 @@
       "TITLE": "Cloud configuratioun",
       "SERVER": "Server Adress",
       "IDENTIFIANT": "Benotzernumm",
+      "SYNC_BUTTON_LABEL": "LU-Synchroniser les données",
       "TEST_BUTTON_LABEL": "LU-Tester l'adresse du server",
       "SAVE_BUTTON_LABEL": "SPUEREN"
     },

@@ -3,9 +3,15 @@ import {connect} from 'react-redux';
 import {Dispatch} from 'redux';
 
 import * as actions from "../../../actions/actions";
-import {displayToast, updateCloudConfiguration} from "../../../actions/actions";
+import {
+    displayToast,
+    prepareDishList,
+    prepareIngredientList, prepareMenuList,
+    prepareSectionList,
+    updateCloudConfiguration
+} from "../../../actions/actions";
 import {ActionType} from "typesafe-actions";
-import DICTIONARY, {INFO, ERROR} from "../../../services/storageService";
+import DICTIONARY, {INFO, ERROR, syncDataFromBack} from "../../../services/storageService";
 import { IonButton, IonContent, IonFooter, IonHeader, IonInput, IonPage} from "@ionic/react";
 import NavBar from "../../../Components/NavBar";
 //Style
@@ -13,6 +19,10 @@ import './Cloud.css';
 import {IRootState} from "../../../reducers";
 
 import {testUrl} from "../../../services/callApiService";
+import {Ingredient} from "../../../Models/Ingredient";
+import {Dish} from "../../../Models/Dish";
+import {Section} from "../../../Models/Section";
+import {Menu} from "../../../Models/Menu";
 
 const mapStateToProps = ({configReducer}: IRootState) => {
     const { cloudServerAddress, cloudIdentifier } = configReducer
@@ -21,6 +31,10 @@ const mapStateToProps = ({configReducer}: IRootState) => {
 
 const mapDispatcherToProps = (dispatch: Dispatch<ActionType<typeof actions>>) => {
     return {
+        prepareIngredientList: (element: Ingredient[]) => dispatch(actions.prepareIngredientList(element)),
+        prepareDishList: (element: Dish[]) => dispatch(actions.prepareDishList(element)),
+        prepareSectionList: (element: Section[]) => dispatch(actions.prepareSectionList(element)),
+        prepareMenuList: (element: Menu[]) => dispatch(actions.prepareMenuList(element)),
         updateCloudConfiguration: (address: string, identifier: string) => dispatch(actions.updateCloudConfiguration(address, identifier)),
         displayToast: (type: string, message: string) => dispatch(actions.displayToast(type, message))
     }
@@ -66,6 +80,11 @@ class CloudPage extends React.Component<ReduxType> {
                            expand='block'
                            color="light">{DICTIONARY.db.cloud_page.TEST_BUTTON_LABEL}
                 </IonButton>
+                <IonButton size="large"
+                           onClick={() => this.syncDataAfterCloudConfUpdate()}
+                           expand='block'
+                           color="light">{DICTIONARY.db.cloud_page.SYNC_BUTTON_LABEL}
+                </IonButton>
                 <h1>{DICTIONARY.db.cloud_page.IDENTIFIANT}</h1>
                 <IonInput
                     className="cloud-input"
@@ -99,6 +118,22 @@ class CloudPage extends React.Component<ReduxType> {
             }
         })
     }
+
+    private syncDataAfterCloudConfUpdate = () => {
+        syncDataFromBack(
+            this.props.prepareIngredientList,
+            this.props.prepareDishList,
+            this.props.prepareMenuList,
+            this.props.prepareSectionList,
+        );
+    }
 }
 
-export default connect(mapStateToProps, {displayToast, updateCloudConfiguration})(CloudPage);
+export default connect(mapStateToProps, {
+    prepareIngredientList,
+    prepareDishList,
+    prepareSectionList,
+    prepareMenuList,
+    displayToast,
+    updateCloudConfiguration
+})(CloudPage);
