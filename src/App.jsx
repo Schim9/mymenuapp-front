@@ -48,6 +48,14 @@ const App = () => {
         loadData();
     }, []);
 
+    // Rechargement à chaque changement de page
+    useEffect(() => {
+        if (!isSettingsComplete()) return;
+        if (['ingredients', 'dishes', 'menus', 'shopping'].includes(currentPage)) {
+            loadData();
+        }
+    }, [currentPage]);
+
     return (
         <div
             className="min-h-screen app-container"
