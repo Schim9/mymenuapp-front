@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { ChefHat, Calendar, List, Search, Plus, X } from 'lucide-react';
-import { ADD_MENU, UPDATE_MENU, DELETE_MENU } from '../actions/menuActions';
+import { SET_MENUS } from '../actions/menuActions';
+import { menusAPI } from '../services/apiService';
 import editMenuImage from "../icons/ic_plat_modif_2.png";
 import deleteMenuImage from "../icons/ic_plat_suppr_2.png";
 
-const MenusPage = ({ menus, dispatch, dishes, ingredients }) => {
-    const [viewMode, setViewMode] = useState('list'); // 'list' ou 'calendar'
+const MenusPage = ({ menus, dispatch, dishes, ingredients, setError }) => {
+    const [viewMode, setViewMode] = useState('calendar'); // 'list' ou 'calendar'
     const [showAddForm, setShowAddForm] = useState(false);
     const [selectedDate, setSelectedDate] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
@@ -24,7 +25,12 @@ const MenusPage = ({ menus, dispatch, dishes, ingredients }) => {
     const [editSoirDishes, setEditSoirDishes] = useState([]);
     const [editSoirIngredients, setEditSoirIngredients] = useState([]);
 
-    const handleAddMenu = () => {
+    const refreshMenus = async () => {
+        const apiMenus = await menusAPI.getAll();
+        dispatch({ type: SET_MENUS, payload: apiMenus });
+    };
+
+    const handleAddMenu = async () => {
         if (!selectedDate) {
             alert('Veuillez sélectionner une date');
             return;
@@ -35,7 +41,6 @@ const MenusPage = ({ menus, dispatch, dishes, ingredients }) => {
             return;
         }
 
-        // Créer les items avec nom pour historique
         const midiItems = [
             ...midiDishes.map(id => ({ id, name: getDishName(id), type: 'dish' })),
             ...midiIngredients.map(id => ({ id, name: getIngredientName(id), type: 'ingredient' }))
@@ -46,41 +51,36 @@ const MenusPage = ({ menus, dispatch, dishes, ingredients }) => {
             ...soirIngredients.map(id => ({ id, name: getIngredientName(id), type: 'ingredient' }))
         ];
 
-        dispatch({
-            type: ADD_MENU,
-            payload: {
-                date: selectedDate,
-                midiItems,
-                soirItems
-            }
-        });
+        try {
+            await menusAPI.create(selectedDate, midiItems, soirItems, dishes, ingredients);
+            await refreshMenus();
 
-        // Reset
-        setSelectedDate('');
-        setMidiDishes([]);
-        setMidiIngredients([]);
-        setSoirDishes([]);
-        setSoirIngredients([]);
-        setShowAddForm(false);
+            setSelectedDate('');
+            setMidiDishes([]);
+            setMidiIngredients([]);
+            setSoirDishes([]);
+            setSoirIngredients([]);
+            setShowAddForm(false);
+        } catch (err) {
+            setError('Erreur lors de la création du menu.');
+        }
     };
 
     const handleEditMenu = (menu) => {
-        setEditingId(menu.id);
+        setEditingId(menu.date);
         setEditDate(menu.date);
-        // Extraire les IDs pour les sélecteurs
         setEditMidiDishes(menu.midiItems.filter(item => item.type === 'dish').map(item => item.id));
         setEditMidiIngredients(menu.midiItems.filter(item => item.type === 'ingredient').map(item => item.id));
         setEditSoirDishes(menu.soirItems.filter(item => item.type === 'dish').map(item => item.id));
         setEditSoirIngredients(menu.soirItems.filter(item => item.type === 'ingredient').map(item => item.id));
     };
 
-    const handleUpdateMenu = (id) => {
+    const handleUpdateMenu = async () => {
         if (!editDate) {
             alert('Veuillez sélectionner une date');
             return;
         }
 
-        // Créer les items avec nom pour historique
         const midiItems = [
             ...editMidiDishes.map(id => ({ id, name: getDishName(id), type: 'dish' })),
             ...editMidiIngredients.map(id => ({ id, name: getIngredientName(id), type: 'ingredient' }))
@@ -91,22 +91,23 @@ const MenusPage = ({ menus, dispatch, dishes, ingredients }) => {
             ...editSoirIngredients.map(id => ({ id, name: getIngredientName(id), type: 'ingredient' }))
         ];
 
-        dispatch({
-            type: UPDATE_MENU,
-            payload: {
-                id,
-                date: editDate,
-                midiItems,
-                soirItems
-            }
-        });
-
-        setEditingId(null);
+        try {
+            await menusAPI.update(editDate, midiItems, soirItems, dishes, ingredients);
+            await refreshMenus();
+            setEditingId(null);
+        } catch (err) {
+            setError('Erreur lors de la modification du menu.');
+        }
     };
 
-    const handleDeleteMenu = (id) => {
+    const handleDeleteMenu = async (menu) => {
         if (window.confirm('Êtes-vous sûr de vouloir supprimer ce menu ?')) {
-            dispatch({ type: DELETE_MENU, payload: id });
+            try {
+                await menusAPI.delete(menu.date, menu.midiItems, menu.soirItems, dishes, ingredients);
+                await refreshMenus();
+            } catch (err) {
+                setError('Erreur lors de la suppression du menu.');
+            }
         }
     };
 
@@ -418,8 +419,8 @@ const ListView = ({
     return (
         <div className="space-y-4">
             {menus.map(menu => (
-                <div key={menu.id} className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-                    {editingId === menu.id ? (
+                <div key={menu.date} className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+                    {editingId === menu.date ? (
                         <div className="space-y-4">
                             <input
                                 type="date"
@@ -450,7 +451,7 @@ const ListView = ({
 
                             <div className="flex gap-2">
                                 <button
-                                    onClick={() => handleUpdateMenu(menu.id)}
+                                    onClick={() => handleUpdateMenu()}
                                     className="flex-1 px-4 py-2 text-white rounded transition-colors"
                                     style={{ backgroundColor: 'var(--custom-blue)' }}
                                 >
@@ -478,7 +479,7 @@ const ListView = ({
                                         <img src={editMenuImage} alt="Modifier" className="w-10 h-10 sm:w-12 sm:h-12" />
                                     </button>
                                     <button
-                                        onClick={() => handleDeleteMenu(menu.id)}
+                                        onClick={() => handleDeleteMenu(menu)}
                                         className="bg-transparent border-none p-0 hover:opacity-80 transition-opacity"
                                     >
                                         <img src={deleteMenuImage} alt="Supprimer" className="w-10 h-10 sm:w-12 sm:h-12" />
@@ -563,7 +564,7 @@ const CalendarView = ({ menus, formatDate }) => {
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                         {weekMenusList.map(menu => (
-                            <div key={menu.id} className="border border-gray-200 rounded-lg p-3">
+                            <div key={menu.date} className="border border-gray-200 rounded-lg p-3">
                                 <div className="text-sm font-semibold text-gray-700 mb-2">
                                     {new Date(menu.date).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric' })}
                                 </div>

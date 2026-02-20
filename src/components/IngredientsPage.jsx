@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
 import {Carrot, Search, AlertTriangle, X} from 'lucide-react';
 import {ADD_INGREDIENT, DELETE_INGREDIENT, UPDATE_INGREDIENT} from '../actions/ingredientActions';
+import { ingredientsAPI } from '../services/apiService';
 import addImage from '../icons/ic_ing_ajout_2.png';
 import updateImage from '../icons/ic_ing_modif_2.png';
 import deleteImage from '../icons/ic_ing_suppr_2.png';
 
-const IngredientsPage = ({ ingredients, dispatch, dishes }) => {
+const IngredientsPage = ({ ingredients, dispatch, dishes, setError }) => {
     const [inputValue, setInputValue] = useState('');
     const [editingId, setEditingId] = useState(null);
     const [editValue, setEditValue] = useState('');
@@ -13,10 +14,15 @@ const IngredientsPage = ({ ingredients, dispatch, dishes }) => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [deleteModalData, setDeleteModalData] = useState(null);
 
-    const handleAdd = () => {
+    const handleAdd = async () => {
         if (inputValue.trim()) {
-            dispatch({ type: ADD_INGREDIENT, payload: inputValue.trim() });
-            setInputValue('');
+            try {
+                const created = await ingredientsAPI.create(inputValue.trim());
+                dispatch({ type: ADD_INGREDIENT, payload: created });
+                setInputValue('');
+            } catch (err) {
+                setError('Erreur lors de l\'ajout de l\'ingrédient.');
+            }
         }
     };
 
@@ -25,15 +31,20 @@ const IngredientsPage = ({ ingredients, dispatch, dishes }) => {
         setEditValue(name);
     };
 
-    const handleUpdate = (id) => {
+    const handleUpdate = async (id) => {
         if (editValue.trim()) {
-            dispatch({ type: UPDATE_INGREDIENT, payload: { id, name: editValue.trim() } });
-            setEditingId(null);
-            setEditValue('');
+            try {
+                await ingredientsAPI.update(id, editValue.trim());
+                dispatch({ type: UPDATE_INGREDIENT, payload: { id, name: editValue.trim() } });
+                setEditingId(null);
+                setEditValue('');
+            } catch (err) {
+                setError('Erreur lors de la modification de l\'ingrédient.');
+            }
         }
     };
 
-    const handleDelete = (id) => {
+    const handleDelete = async (id) => {
         // Vérifier si l'ingrédient est utilisé dans un plat
         const dishesUsingIngredient = dishes.filter(dish =>
             dish.ingredients.includes(id)
@@ -49,7 +60,12 @@ const IngredientsPage = ({ ingredients, dispatch, dishes }) => {
             return;
         }
 
-        dispatch({ type: DELETE_INGREDIENT, payload: id });
+        try {
+            await ingredientsAPI.delete(id);
+            dispatch({ type: DELETE_INGREDIENT, payload: id });
+        } catch (err) {
+            setError('Erreur lors de la suppression de l\'ingrédient.');
+        }
     };
 
     const handleKeyPress = (e, action, id) => {
@@ -58,10 +74,10 @@ const IngredientsPage = ({ ingredients, dispatch, dishes }) => {
         }
     };
 
-    // Filtrer les ingrédients selon le terme de recherche
-    const filteredIngredients = ingredients.filter(ingredient =>
-        ingredient.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // Filtrer et trier les ingrédients par ordre alphabétique
+    const filteredIngredients = ingredients
+        .filter(ingredient => ingredient.name.toLowerCase().includes(searchTerm.toLowerCase()))
+        .sort((a, b) => a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }));
 
     return (
         <div className="max-w-2xl mx-auto px-2 sm:px-4">

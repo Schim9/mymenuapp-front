@@ -1,12 +1,13 @@
 import React, {useState} from 'react';
 import {Search, Utensils} from 'lucide-react';
 import {ADD_DISH, DELETE_DISH, UPDATE_DISH} from '../actions/dishActions';
+import { dishesAPI } from '../services/apiService';
 import addImage from "../icons/ic_ing_reload_2.png";
 import addDishImage from "../icons/ic_plat_ajout_2.png";
 import editDishImage from "../icons/ic_plat_modif_2.png";
 import deleteDishImage from "../icons/ic_plat_suppr_2.png";
 
-const DishesPage = ({dishes, dispatch, ingredients}) => {
+const DishesPage = ({dishes, dispatch, ingredients, setError}) => {
     const [dishName, setDishName] = useState('');
     const [selectedIngredients, setSelectedIngredients] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -17,18 +18,17 @@ const DishesPage = ({dishes, dispatch, ingredients}) => {
     const [ingredientFilter, setIngredientFilter] = useState('');
     const [editIngredientFilter, setEditIngredientFilter] = useState('');
 
-    const handleAddDish = () => {
+    const handleAddDish = async () => {
         if (dishName.trim() && selectedIngredients.length > 0) {
-            dispatch({
-                type: ADD_DISH,
-                payload: {
-                    name: dishName.trim(),
-                    ingredients: selectedIngredients
-                }
-            });
-            setDishName('');
-            setSelectedIngredients([]);
-            setShowIngredientSelector(false);
+            try {
+                const created = await dishesAPI.create(dishName.trim(), selectedIngredients);
+                dispatch({ type: ADD_DISH, payload: created });
+                setDishName('');
+                setSelectedIngredients([]);
+                setShowIngredientSelector(false);
+            } catch (err) {
+                setError('Erreur lors de l\'ajout du plat.');
+            }
         }
     };
 
@@ -38,24 +38,30 @@ const DishesPage = ({dishes, dispatch, ingredients}) => {
         setEditIngredients(dish.ingredients);
     };
 
-    const handleUpdateDish = (id) => {
+    const handleUpdateDish = async (id) => {
         if (editName.trim() && editIngredients.length > 0) {
-            dispatch({
-                type: UPDATE_DISH,
-                payload: {
-                    id,
-                    name: editName.trim(),
-                    ingredients: editIngredients
-                }
-            });
-            setEditingId(null);
-            setEditName('');
-            setEditIngredients([]);
+            try {
+                await dishesAPI.update(id, editName.trim(), editIngredients);
+                dispatch({
+                    type: UPDATE_DISH,
+                    payload: { id, name: editName.trim(), ingredients: editIngredients }
+                });
+                setEditingId(null);
+                setEditName('');
+                setEditIngredients([]);
+            } catch (err) {
+                setError('Erreur lors de la modification du plat.');
+            }
         }
     };
 
-    const handleDeleteDish = (id) => {
-        dispatch({type: DELETE_DISH, payload: id});
+    const handleDeleteDish = async (id) => {
+        try {
+            await dishesAPI.delete(id);
+            dispatch({type: DELETE_DISH, payload: id});
+        } catch (err) {
+            setError('Erreur lors de la suppression du plat.');
+        }
     };
 
     const toggleIngredient = (ingredientId, isEditing = false) => {
@@ -65,12 +71,14 @@ const DishesPage = ({dishes, dispatch, ingredients}) => {
                     ? prev.filter(id => id !== ingredientId)
                     : [...prev, ingredientId]
             );
+            setEditIngredientFilter('');
         } else {
             setSelectedIngredients(prev =>
                 prev.includes(ingredientId)
                     ? prev.filter(id => id !== ingredientId)
                     : [...prev, ingredientId]
             );
+            setIngredientFilter('');
         }
     };
 
@@ -79,9 +87,9 @@ const DishesPage = ({dishes, dispatch, ingredients}) => {
         return ingredient ? ingredient.name : 'Inconnu';
     };
 
-    const filteredDishes = dishes.filter(dish =>
-        dish.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredDishes = dishes
+        .filter(dish => dish.name.toLowerCase().includes(searchTerm.toLowerCase()))
+        .sort((a, b) => a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }));
 
     // Filtrer les ingrédients pour le formulaire d'ajout
     const filteredIngredientsForAdd = ingredients
