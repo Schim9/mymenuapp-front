@@ -7,6 +7,8 @@ import addDishImage from "../icons/ic_plat_ajout_2.png";
 import editDishImage from "../icons/ic_plat_modif_2.png";
 import deleteDishImage from "../icons/ic_plat_suppr_2.png";
 
+const normalize = str => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
 const DishesPage = ({dishes, dispatch, ingredients, setError}) => {
     const [dishName, setDishName] = useState('');
     const [selectedIngredients, setSelectedIngredients] = useState([]);
@@ -88,17 +90,17 @@ const DishesPage = ({dishes, dispatch, ingredients, setError}) => {
     };
 
     const filteredDishes = dishes
-        .filter(dish => dish.name.toLowerCase().includes(searchTerm.toLowerCase()))
+        .filter(dish => normalize(dish.name).includes(normalize(searchTerm)))
         .sort((a, b) => a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }));
 
     // Filtrer les ingrédients pour le formulaire d'ajout
     const filteredIngredientsForAdd = ingredients
-        .filter(ing => ing.name.toLowerCase().includes(ingredientFilter.toLowerCase()))
+        .filter(ing => normalize(ing.name).includes(normalize(ingredientFilter)))
         .sort((i1, i2) => i1.name.localeCompare(i2.name));
 
     // Filtrer les ingrédients pour le formulaire d'édition
     const filteredIngredientsForEdit = ingredients
-        .filter(ing => ing.name.toLowerCase().includes(editIngredientFilter.toLowerCase()))
+        .filter(ing => normalize(ing.name).includes(normalize(editIngredientFilter)))
         .sort((i1, i2) => i1.name.localeCompare(i2.name));
 
     return (

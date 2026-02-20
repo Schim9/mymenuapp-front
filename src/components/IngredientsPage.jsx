@@ -6,6 +6,8 @@ import addImage from '../icons/ic_ing_ajout_2.png';
 import updateImage from '../icons/ic_ing_modif_2.png';
 import deleteImage from '../icons/ic_ing_suppr_2.png';
 
+const normalize = str => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
 const IngredientsPage = ({ ingredients, dispatch, dishes, setError }) => {
     const [inputValue, setInputValue] = useState('');
     const [editingId, setEditingId] = useState(null);
@@ -76,7 +78,7 @@ const IngredientsPage = ({ ingredients, dispatch, dishes, setError }) => {
 
     // Filtrer et trier les ingrédients par ordre alphabétique
     const filteredIngredients = ingredients
-        .filter(ingredient => ingredient.name.toLowerCase().includes(searchTerm.toLowerCase()))
+        .filter(ingredient => normalize(ingredient.name).includes(normalize(searchTerm)))
         .sort((a, b) => a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }));
 
     return (

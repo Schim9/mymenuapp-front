@@ -5,6 +5,8 @@ import { menusAPI } from '../services/apiService';
 import editMenuImage from "../icons/ic_plat_modif_2.png";
 import deleteMenuImage from "../icons/ic_plat_suppr_2.png";
 
+const normalize = str => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
 const MenusPage = ({ menus, dispatch, dishes, ingredients, setError }) => {
     const [viewMode, setViewMode] = useState('calendar'); // 'list' ou 'calendar'
     const [showAddForm, setShowAddForm] = useState(false);
@@ -156,8 +158,8 @@ const MenusPage = ({ menus, dispatch, dishes, ingredients, setError }) => {
     const filteredMenus = menus
         .filter(menu => {
             if (!searchTerm) return true;
-            const formattedDate = formatDate(menu.date).toLowerCase();
-            return formattedDate.includes(searchTerm.toLowerCase());
+            const formattedDate = formatDate(menu.date);
+            return normalize(formattedDate).includes(normalize(searchTerm));
         })
         .sort((a, b) => new Date(a.date) - new Date(b.date));
 
