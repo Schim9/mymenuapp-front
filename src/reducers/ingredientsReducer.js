@@ -1,9 +1,11 @@
-import { ADD_INGREDIENT, UPDATE_INGREDIENT, DELETE_INGREDIENT } from '../actions/ingredientActions';
+import { SET_INGREDIENTS, ADD_INGREDIENT, UPDATE_INGREDIENT, DELETE_INGREDIENT } from '../actions/ingredientActions';
 
 export const ingredientsReducer = (state = [], action) => {
     switch (action.type) {
+        case SET_INGREDIENTS:
+            return action.payload;
         case ADD_INGREDIENT:
-            return [...state, { id: Date.now(), name: action.payload }];
+            return [...state, action.payload];
         case UPDATE_INGREDIENT:
             return state.map(ing =>
                 ing.id === action.payload.id ? { ...ing, name: action.payload.name } : ing

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, Carrot, Utensils, ChefHat, ShoppingCart, Menu, X } from 'lucide-react';
+import { Home, Carrot, Utensils, ChefHat, ShoppingCart, Menu, X, Settings } from 'lucide-react';
 
 const Navigation = ({ currentPage, setCurrentPage }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -10,6 +10,7 @@ const Navigation = ({ currentPage, setCurrentPage }) => {
         { name: 'Plats', icon: Utensils, page: 'dishes' },
         { name: 'Menus', icon: ChefHat, page: 'menus' },
         { name: 'Liste de courses', icon: ShoppingCart, page: 'shopping' },
+        { name: 'Paramètres', icon: Settings, page: 'settings' },
     ];
 
     const handlePageChange = (page) => {

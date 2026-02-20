@@ -1,13 +1,11 @@
-import { ADD_DISH, UPDATE_DISH, DELETE_DISH } from '../actions/dishActions';
+import { SET_DISHES, ADD_DISH, UPDATE_DISH, DELETE_DISH } from '../actions/dishActions';
 
 export const dishesReducer = (state = [], action) => {
     switch (action.type) {
+        case SET_DISHES:
+            return action.payload;
         case ADD_DISH:
-            return [...state, {
-                id: Date.now(),
-                name: action.payload.name,
-                ingredients: action.payload.ingredients
-            }];
+            return [...state, action.payload];
         case UPDATE_DISH:
             return state.map(dish =>
                 dish.id === action.payload.id

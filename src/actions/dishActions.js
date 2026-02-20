@@ -1,10 +1,16 @@
+export const SET_DISHES = 'SET_DISHES';
 export const ADD_DISH = 'ADD_DISH';
 export const UPDATE_DISH = 'UPDATE_DISH';
 export const DELETE_DISH = 'DELETE_DISH';
 
-export const addDish = (name, ingredients) => ({
+export const setDishes = (dishes) => ({
+    type: SET_DISHES,
+    payload: dishes
+});
+
+export const addDish = (dish) => ({
     type: ADD_DISH,
-    payload: { name, ingredients }
+    payload: dish
 });
 
 export const updateDish = (id, name, ingredients) => ({

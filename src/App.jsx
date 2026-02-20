@@ -32,6 +32,22 @@ const App = () => {
     const [dishes, dispatchDishes] = useReducer(dishesReducer, []);
     const [menus, dispatchMenus] = useReducer(menusReducer, []);
 
+    const loadData = async () => {
+        try {
+            const [apiIngredients, apiDishes, apiMenus] = await Promise.all([
+                ingredientsAPI.getAll(),
+                dishesAPI.getAll(),
+                menusAPI.getAll(),
+            ]);
+            dispatchIngredients({ type: SET_INGREDIENTS, payload: apiIngredients });
+            dispatchDishes({ type: SET_DISHES, payload: apiDishes });
+            dispatchMenus({ type: SET_MENUS, payload: apiMenus });
+        } catch (err) {
+            console.error('Erreur lors du chargement des données:', err);
+            setError('Impossible de se connecter au serveur. Vérifiez que le backend est démarré.');
+        }
+    };
+
     // Chargement initial : migration localStorage si nécessaire, puis fetch API
     const initCalled = useRef(false);
     useEffect(() => {
@@ -115,16 +131,7 @@ const App = () => {
                     setMigrating(false);
                 }
 
-                // Fetch depuis l'API
-                const [apiIngredients, apiDishes, apiMenus] = await Promise.all([
-                    ingredientsAPI.getAll(),
-                    dishesAPI.getAll(),
-                    menusAPI.getAll(),
-                ]);
-
-                dispatchIngredients({ type: SET_INGREDIENTS, payload: apiIngredients });
-                dispatchDishes({ type: SET_DISHES, payload: apiDishes });
-                dispatchMenus({ type: SET_MENUS, payload: apiMenus });
+                await loadData();
             } catch (err) {
                 console.error('Erreur lors de l\'initialisation:', err);
                 setError('Impossible de se connecter au serveur. Vérifiez que le backend est démarré.');
@@ -215,7 +222,7 @@ const App = () => {
                         />
                     )}
                     {currentPage === 'settings' && (
-                        <SettingsPage setError={setError} />
+                        <SettingsPage setError={setError} onSettingsSaved={loadData} />
                     )}
                 </div>
             </div>
