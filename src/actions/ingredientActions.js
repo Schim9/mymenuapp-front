@@ -13,9 +13,9 @@ export const addIngredient = (ingredient) => ({
     payload: ingredient
 });
 
-export const updateIngredient = (id, name) => ({
+export const updateIngredient = (id, name, isDish) => ({
     type: UPDATE_INGREDIENT,
-    payload: { id, name }
+    payload: { id, name, isDish }
 });
 
 export const deleteIngredient = (id) => ({

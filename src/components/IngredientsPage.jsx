@@ -10,8 +10,10 @@ const normalize = str => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').to
 
 const IngredientsPage = ({ ingredients, dispatch, dishes, setError }) => {
     const [inputValue, setInputValue] = useState('');
+    const [isDishInput, setIsDishInput] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [editValue, setEditValue] = useState('');
+    const [editIsDish, setEditIsDish] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [deleteModalData, setDeleteModalData] = useState(null);
@@ -19,25 +21,27 @@ const IngredientsPage = ({ ingredients, dispatch, dishes, setError }) => {
     const handleAdd = async () => {
         if (inputValue.trim()) {
             try {
-                const created = await ingredientsAPI.create(inputValue.trim());
+                const created = await ingredientsAPI.create(inputValue.trim(), isDishInput);
                 dispatch({ type: ADD_INGREDIENT, payload: created });
                 setInputValue('');
+                setIsDishInput(false);
             } catch (err) {
                 setError('Erreur lors de l\'ajout de l\'ingrédient.');
             }
         }
     };
 
-    const handleEdit = (id, name) => {
+    const handleEdit = (id, name, isDish) => {
         setEditingId(id);
         setEditValue(name);
+        setEditIsDish(isDish || false);
     };
 
     const handleUpdate = async (id) => {
         if (editValue.trim()) {
             try {
-                await ingredientsAPI.update(id, editValue.trim());
-                dispatch({ type: UPDATE_INGREDIENT, payload: { id, name: editValue.trim() } });
+                await ingredientsAPI.update(id, editValue.trim(), editIsDish);
+                dispatch({ type: UPDATE_INGREDIENT, payload: { id, name: editValue.trim(), isDish: editIsDish } });
                 setEditingId(null);
                 setEditValue('');
             } catch (err) {
@@ -162,6 +166,15 @@ const IngredientsPage = ({ ingredients, dispatch, dishes, setError }) => {
                         />
                     </button>
                 </div>
+                <label className="flex items-center gap-2 mt-3 cursor-pointer select-none">
+                    <input
+                        type="checkbox"
+                        checked={isDishInput}
+                        onChange={(e) => setIsDishInput(e.target.checked)}
+                        className="w-4 h-4 text-cyan-800 rounded focus:ring-cyan-800"
+                    />
+                    <span className="text-sm text-gray-700">Peut être utilisé comme plat</span>
+                </label>
             </div>
 
             {/* Barre de recherche */}
@@ -200,37 +213,56 @@ const IngredientsPage = ({ ingredients, dispatch, dishes, setError }) => {
                         {filteredIngredients.map(ingredient => (
                             <li key={ingredient.id} className="p-3 sm:p-4 hover:bg-gray-50 transition-colors">
                                 {editingId === ingredient.id ? (
-                                    <div className="flex flex-col sm:flex-row gap-3">
-                                        <input
-                                            type="text"
-                                            value={editValue}
-                                            onChange={(e) => setEditValue(e.target.value)}
-                                            onKeyPress={(e) => handleKeyPress(e, handleUpdate, ingredient.id)}
-                                            className="flex-1 px-3 py-2 border border-cyan-800 rounded focus:outline-none focus:ring-2 focus:ring-cyan-800 text-base"
-                                            autoFocus
-                                        />
-                                        <div className="flex gap-2">
-                                            <button
-                                                onClick={() => handleUpdate(ingredient.id)}
-                                                className="flex-1 sm:flex-none text-white px-4 py-2 rounded hover:bg-cyan-900 transition-colors"
-                                                style={{ backgroundColor: 'var(--custom-blue)' }}
-                                            >
-                                                Valider
-                                            </button>
-                                            <button
-                                                onClick={() => setEditingId(null)}
-                                                className="flex-1 sm:flex-none bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 transition-colors"
-                                            >
-                                                Annuler
-                                            </button>
+                                    <div className="flex flex-col gap-3">
+                                        <div className="flex flex-col sm:flex-row gap-3">
+                                            <input
+                                                type="text"
+                                                value={editValue}
+                                                onChange={(e) => setEditValue(e.target.value)}
+                                                onKeyPress={(e) => handleKeyPress(e, handleUpdate, ingredient.id)}
+                                                className="flex-1 px-3 py-2 border border-cyan-800 rounded focus:outline-none focus:ring-2 focus:ring-cyan-800 text-base"
+                                                autoFocus
+                                            />
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => handleUpdate(ingredient.id)}
+                                                    className="flex-1 sm:flex-none text-white px-4 py-2 rounded hover:bg-cyan-900 transition-colors"
+                                                    style={{ backgroundColor: 'var(--custom-blue)' }}
+                                                >
+                                                    Valider
+                                                </button>
+                                                <button
+                                                    onClick={() => setEditingId(null)}
+                                                    className="flex-1 sm:flex-none bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 transition-colors"
+                                                >
+                                                    Annuler
+                                                </button>
+                                            </div>
                                         </div>
+                                        <label className="flex items-center gap-2 cursor-pointer select-none">
+                                            <input
+                                                type="checkbox"
+                                                checked={editIsDish}
+                                                onChange={(e) => setEditIsDish(e.target.checked)}
+                                                className="w-4 h-4 text-cyan-800 rounded focus:ring-cyan-800"
+                                            />
+                                            <span className="text-sm text-gray-700">Peut être utilisé comme plat</span>
+                                        </label>
                                     </div>
                                 ) : (
                                     <div className="flex items-center justify-between gap-2">
-                                        <span className="text-base sm:text-lg text-gray-800 break-words flex-1 min-w-0">{ingredient.name}</span>
+                                        <div className="flex items-center gap-2 flex-1 min-w-0">
+                                            <span className="text-base sm:text-lg text-gray-800 break-words">{ingredient.name}</span>
+                                            {ingredient.isDish && (
+                                                <span className="text-xs px-2 py-0.5 rounded-full text-white flex-shrink-0"
+                                                      style={{ backgroundColor: 'var(--custom-blue)' }}>
+                                                    Plat
+                                                </span>
+                                            )}
+                                        </div>
                                         <div className="flex gap-1 sm:gap-2 flex-shrink-0">
                                             <button
-                                                onClick={() => handleEdit(ingredient.id, ingredient.name)}
+                                                onClick={() => handleEdit(ingredient.id, ingredient.name, ingredient.isDish)}
                                                 className="bg-transparent border-none p-0 hover:opacity-80 transition-opacity"
                                                 title="Modifier"
                                             >

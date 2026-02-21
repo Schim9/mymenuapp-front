@@ -45,17 +45,17 @@ export const ingredientsAPI = {
         return await fetchAPI('/ingredients');
     },
 
-    create: async (name) => {
+    create: async (name, isDish = false) => {
         return await fetchAPI('/ingredients', {
             method: 'POST',
-            body: JSON.stringify({ id: null, name, sectionId: 0, unit: 'PIECE' }),
+            body: JSON.stringify({ id: null, name, sectionId: 0, unit: 'PIECE', isDish }),
         });
     },
 
-    update: async (id, name) => {
+    update: async (id, name, isDish = false) => {
         return await fetchAPI(`/ingredients/${id}`, {
             method: 'PUT',
-            body: JSON.stringify({ id, name, sectionId: 0, unit: 'PIECE' }),
+            body: JSON.stringify({ id, name, sectionId: 0, unit: 'PIECE', isDish }),
         });
     },
 

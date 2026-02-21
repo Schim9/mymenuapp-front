@@ -325,64 +325,61 @@ const MenuMealSelector = ({
                               onToggleDish,
                               onToggleIngredient
                           }) => {
-    const [showDishes, setShowDishes] = useState(false);
-    const [showIngredients, setShowIngredients] = useState(false);
+    const [showItems, setShowItems] = useState(false);
+
+    // Liste unifiée : tous les plats + ingrédients marqués "isDish", triée alphabétiquement
+    const allItems = [
+        ...dishes.map(d => ({ id: d.id, name: d.name, itemType: 'dish' })),
+        ...ingredients
+            .filter(ing => ing.isDish)
+            .map(ing => ({ id: ing.id, name: ing.name, itemType: 'ingredient' }))
+    ].sort((a, b) => a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }));
+
+    const totalSelected = selectedDishes.length + selectedIngredients.length;
+
+    const isSelected = (item) =>
+        item.itemType === 'dish'
+            ? selectedDishes.includes(item.id)
+            : selectedIngredients.includes(item.id);
+
+    const handleToggle = (item) => {
+        if (item.itemType === 'dish') onToggleDish(item.id);
+        else onToggleIngredient(item.id);
+    };
 
     return (
         <div className="border border-gray-200 rounded-lg p-4 mb-4">
             <h4 className="font-semibold text-gray-700 mb-3">{title}</h4>
 
-            {/* Toggle Plats */}
             <button
-                onClick={() => setShowDishes(!showDishes)}
+                onClick={() => setShowItems(!showItems)}
                 className="w-full text-left px-4 py-2 bg-gray-100 rounded mb-2 hover:bg-gray-200 transition-colors"
             >
-                Plats ({selectedDishes.length} sélectionné{selectedDishes.length > 1 ? 's' : ''})
+                Plats ({totalSelected} sélectionné{totalSelected > 1 ? 's' : ''})
             </button>
 
-            {showDishes && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mb-3 ml-4">
-                    {dishes.map(dish => (
-                        <label
-                            key={dish.id}
-                            className="flex items-center gap-2 p-2 rounded hover:bg-gray-50 cursor-pointer"
-                        >
-                            <input
-                                type="checkbox"
-                                checked={selectedDishes.includes(dish.id)}
-                                onChange={() => onToggleDish(dish.id)}
-                                className="w-4 h-4 text-cyan-800 rounded focus:ring-cyan-700"
-                            />
-                            <span className="text-sm">{dish.name}</span>
-                        </label>
-                    ))}
-                </div>
-            )}
-
-            {/* Toggle Ingrédients */}
-            <button
-                onClick={() => setShowIngredients(!showIngredients)}
-                className="w-full text-left px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 transition-colors"
-            >
-                Ingrédients ({selectedIngredients.length} sélectionné{selectedIngredients.length > 1 ? 's' : ''})
-            </button>
-
-            {showIngredients && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-3 ml-4">
-                    {ingredients.map(ingredient => (
-                        <label
-                            key={ingredient.id}
-                            className="flex items-center gap-2 p-2 rounded hover:bg-gray-50 cursor-pointer"
-                        >
-                            <input
-                                type="checkbox"
-                                checked={selectedIngredients.includes(ingredient.id)}
-                                onChange={() => onToggleIngredient(ingredient.id)}
-                                className="w-4 h-4 text-cyan-800 rounded focus:ring-cyan-700"
-                            />
-                            <span className="text-sm">{ingredient.name}</span>
-                        </label>
-                    ))}
+            {showItems && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-2 ml-4">
+                    {allItems.length === 0 ? (
+                        <p className="text-sm text-gray-400 italic col-span-full">
+                            Aucun plat ou ingrédient disponible
+                        </p>
+                    ) : (
+                        allItems.map(item => (
+                            <label
+                                key={`${item.itemType}-${item.id}`}
+                                className="flex items-center gap-2 p-2 rounded hover:bg-gray-50 cursor-pointer"
+                            >
+                                <input
+                                    type="checkbox"
+                                    checked={isSelected(item)}
+                                    onChange={() => handleToggle(item)}
+                                    className="w-4 h-4 text-cyan-800 rounded focus:ring-cyan-700"
+                                />
+                                <span className="text-sm">{item.name}</span>
+                            </label>
+                        ))
+                    )}
                 </div>
             )}
         </div>
