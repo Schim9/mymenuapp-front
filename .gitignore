@@ -22,3 +22,4 @@ yarn-error.log*
 /draft/
 /.claude/settings.local.json
 /.idea/
+*.iml
