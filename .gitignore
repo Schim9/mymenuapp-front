@@ -21,4 +21,4 @@ yarn-debug.log*
 yarn-error.log*
 /draft/
 /.claude/settings.local.json
-/.idea/workspace.xml
+/.idea/
