@@ -41,7 +41,10 @@ const Navigation = ({ currentPage, setCurrentPage }) => {
 
                 {/* Mobile - Menu hamburger */}
                 <div className="md:hidden">
-                    <div className="flex items-center justify-between py-3">
+                    <div
+                        className="flex items-center justify-between py-3 cursor-pointer select-none"
+                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    >
                         <div className="flex items-center gap-2">
                             {navItems.find(item => item.page === currentPage)?.icon && (
                                 React.createElement(navItems.find(item => item.page === currentPage).icon, { size: 24 })
@@ -50,12 +53,9 @@ const Navigation = ({ currentPage, setCurrentPage }) => {
                                 {navItems.find(item => item.page === currentPage)?.name}
                             </span>
                         </div>
-                        <button
-                            onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            className="p-2 hover:bg-teal-700 rounded transition-colors"
-                        >
+                        <div className="p-2">
                             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-                        </button>
+                        </div>
                     </div>
 
                     {/* Menu déroulant mobile */}

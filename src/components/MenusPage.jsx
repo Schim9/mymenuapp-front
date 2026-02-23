@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ChefHat, Calendar, List, Search, Plus, X } from 'lucide-react';
 import { SET_MENUS } from '../actions/menuActions';
 import { menusAPI } from '../services/apiService';
@@ -12,6 +12,9 @@ const MenusPage = ({ menus, dispatch, dishes, ingredients, setError }) => {
     const [showAddForm, setShowAddForm] = useState(false);
     const [selectedDate, setSelectedDate] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
+
+    const today = new Date();
+    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
     // États pour le formulaire
     const [midiDishes, setMidiDishes] = useState([]);
@@ -281,6 +284,7 @@ const MenusPage = ({ menus, dispatch, dishes, ingredients, setError }) => {
             {viewMode === 'list' ? (
                 <ListView
                     menus={filteredMenus}
+                    todayStr={todayStr}
                     editingId={editingId}
                     editDate={editDate}
                     setEditDate={setEditDate}
@@ -302,6 +306,7 @@ const MenusPage = ({ menus, dispatch, dishes, ingredients, setError }) => {
             ) : (
                 <CalendarView
                     menus={filteredMenus}
+                    todayStr={todayStr}
                     formatDate={formatDate}
                 />
             )}
@@ -389,6 +394,7 @@ const MenuMealSelector = ({
 // Vue Liste
 const ListView = ({
                       menus,
+                      todayStr,
                       editingId,
                       editDate,
                       setEditDate,
@@ -407,6 +413,14 @@ const ListView = ({
                       toggleItem,
                       setEditingId
                   }) => {
+    const scrollTargetRef = useRef(null);
+
+    useEffect(() => {
+        if (scrollTargetRef.current) {
+            scrollTargetRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, []);
+
     if (menus.length === 0) {
         return (
             <div className="bg-white rounded-lg shadow-md p-8 text-center text-gray-500">
@@ -415,10 +429,16 @@ const ListView = ({
         );
     }
 
+    const scrollTargetDate = (menus.find(m => m.date >= todayStr) ?? menus[menus.length - 1]).date;
+
     return (
         <div className="space-y-4">
             {menus.map(menu => (
-                <div key={menu.date} className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+                <div
+                    key={menu.date}
+                    ref={menu.date === scrollTargetDate ? scrollTargetRef : null}
+                    className={`bg-white rounded-lg shadow-md p-4 sm:p-6 ${menu.date === todayStr ? 'ring-2 ring-green-400' : ''}`}
+                >
                     {editingId === menu.date ? (
                         <div className="space-y-4">
                             <input
@@ -467,9 +487,16 @@ const ListView = ({
                     ) : (
                         <>
                             <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-xl font-semibold text-gray-800">
-                                    {formatDate(menu.date)}
-                                </h3>
+                                <div className="flex items-center gap-2">
+                                    <h3 className="text-xl font-semibold text-gray-800">
+                                        {formatDate(menu.date)}
+                                    </h3>
+                                    {menu.date === todayStr && (
+                                        <span className="px-2 py-0.5 text-xs font-semibold text-white bg-green-500 rounded-full">
+                                            Aujourd'hui
+                                        </span>
+                                    )}
+                                </div>
                                 <div className="flex gap-1">
                                     <button
                                         onClick={() => handleEditMenu(menu)}
@@ -531,7 +558,15 @@ const MealDisplay = ({ title, items }) => {
 };
 
 // Vue Calendrier
-const CalendarView = ({ menus, formatDate }) => {
+const CalendarView = ({ menus, todayStr, formatDate }) => {
+    const scrollTargetRef = useRef(null);
+
+    useEffect(() => {
+        if (scrollTargetRef.current) {
+            scrollTargetRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, []);
+
     if (menus.length === 0) {
         return (
             <div className="bg-white rounded-lg shadow-md p-8 text-center text-gray-500">
@@ -554,18 +589,40 @@ const CalendarView = ({ menus, formatDate }) => {
         return acc;
     }, {});
 
+    const weekKeys = Object.keys(weekMenus).sort();
+    const scrollTargetWeek = weekKeys.find(wk => {
+        const wkEnd = new Date(wk + 'T00:00:00');
+        wkEnd.setDate(wkEnd.getDate() + 6);
+        const wkEndStr = wkEnd.toISOString().split('T')[0];
+        return wk <= todayStr && todayStr <= wkEndStr;
+    }) ?? weekKeys.find(wk => wk > todayStr) ?? weekKeys[weekKeys.length - 1];
+
     return (
         <div className="space-y-6">
             {Object.entries(weekMenus).map(([weekStart, weekMenusList]) => (
-                <div key={weekStart} className="bg-white rounded-lg shadow-md p-4">
+                <div
+                    key={weekStart}
+                    ref={weekStart === scrollTargetWeek ? scrollTargetRef : null}
+                    className="bg-white rounded-lg shadow-md p-4"
+                >
                     <h3 className="text-lg font-semibold mb-4 text-cyan-800">
                         Semaine du {new Date(weekStart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                         {weekMenusList.map(menu => (
-                            <div key={menu.date} className="border border-gray-200 rounded-lg p-3">
-                                <div className="text-sm font-semibold text-gray-700 mb-2">
-                                    {new Date(menu.date).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric' })}
+                            <div
+                                key={menu.date}
+                                className={`border rounded-lg p-3 ${menu.date === todayStr ? 'border-green-400 ring-2 ring-green-400 bg-green-50' : 'border-gray-200'}`}
+                            >
+                                <div className="flex items-center gap-1 mb-2">
+                                    <span className="text-sm font-semibold text-gray-700">
+                                        {new Date(menu.date).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric' })}
+                                    </span>
+                                    {menu.date === todayStr && (
+                                        <span className="px-1.5 py-0.5 text-xs font-semibold text-white bg-green-500 rounded-full">
+                                            Aujourd'hui
+                                        </span>
+                                    )}
                                 </div>
                                 <div className="space-y-2 text-xs">
                                     <div>
