@@ -108,7 +108,7 @@ const MenusPage = ({ menus, dispatch, dishes, ingredients, setError }) => {
     const handleDeleteMenu = async (menu) => {
         if (window.confirm('Êtes-vous sûr de vouloir supprimer ce menu ?')) {
             try {
-                await menusAPI.delete(menu.date, menu.midiItems, menu.soirItems, dishes, ingredients);
+                await menusAPI.delete(menu.date);
                 await refreshMenus();
             } catch (err) {
                 setError('Erreur lors de la suppression du menu.');
@@ -131,7 +131,7 @@ const MenusPage = ({ menus, dispatch, dishes, ingredients, setError }) => {
             (key === 'midiDishes' ? midiDishes : key === 'midiIngredients' ? midiIngredients :
                 key === 'soirDishes' ? soirDishes : soirIngredients);
 
-        setters[key](prev =>
+        setters[key](_prev =>
             currentState.includes(itemId)
                 ? currentState.filter(id => id !== itemId)
                 : [...currentState, itemId]
@@ -405,8 +405,6 @@ const ListView = ({
                       dishes,
                       ingredients,
                       formatDate,
-                      getDishName,
-                      getIngredientName,
                       handleEditMenu,
                       handleUpdateMenu,
                       handleDeleteMenu,
@@ -558,7 +556,7 @@ const MealDisplay = ({ title, items }) => {
 };
 
 // Vue Calendrier
-const CalendarView = ({ menus, todayStr, formatDate }) => {
+const CalendarView = ({ menus, todayStr }) => {
     const scrollTargetRef = useRef(null);
 
     useEffect(() => {
@@ -589,20 +587,13 @@ const CalendarView = ({ menus, todayStr, formatDate }) => {
         return acc;
     }, {});
 
-    const weekKeys = Object.keys(weekMenus).sort();
-    const scrollTargetWeek = weekKeys.find(wk => {
-        const wkEnd = new Date(wk + 'T00:00:00');
-        wkEnd.setDate(wkEnd.getDate() + 6);
-        const wkEndStr = wkEnd.toISOString().split('T')[0];
-        return wk <= todayStr && todayStr <= wkEndStr;
-    }) ?? weekKeys.find(wk => wk > todayStr) ?? weekKeys[weekKeys.length - 1];
+    const scrollTargetDate = (menus.find(m => m.date >= todayStr) ?? menus[menus.length - 1]).date;
 
     return (
         <div className="space-y-6">
             {Object.entries(weekMenus).map(([weekStart, weekMenusList]) => (
                 <div
                     key={weekStart}
-                    ref={weekStart === scrollTargetWeek ? scrollTargetRef : null}
                     className="bg-white rounded-lg shadow-md p-4"
                 >
                     <h3 className="text-lg font-semibold mb-4 text-cyan-800">
@@ -612,6 +603,7 @@ const CalendarView = ({ menus, todayStr, formatDate }) => {
                         {weekMenusList.map(menu => (
                             <div
                                 key={menu.date}
+                                ref={menu.date === scrollTargetDate ? scrollTargetRef : null}
                                 className={`border rounded-lg p-3 ${menu.date === todayStr ? 'border-green-400 ring-2 ring-green-400 bg-green-50' : 'border-gray-200'}`}
                             >
                                 <div className="flex items-center gap-1 mb-2">

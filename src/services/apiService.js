@@ -94,6 +94,27 @@ export const dishesAPI = {
     },
 };
 
+// ============= SHOPPING LIST =============
+
+export const shoppingListAPI = {
+    getItems: async () => {
+        return await fetchAPI('/shopping-list');
+    },
+
+    addItems: async (names) => {
+        return await fetchAPI('/shopping-list', {
+            method: 'POST',
+            body: JSON.stringify(names),
+        });
+    },
+
+    consumeItems: async () => {
+        return await fetchAPI('/shopping-list', {
+            method: 'DELETE',
+        });
+    },
+};
+
 // ============= MENUS =============
 
 // Mapping backend -> frontend pour un MenuItem
@@ -157,12 +178,10 @@ export const menusAPI = {
         });
     },
 
-    delete: async (date, midiItems, soirItems, allDishes, allIngredients) => {
-        const body = mapMenuToBackend(date, midiItems, soirItems, allDishes, allIngredients);
-        return await fetchAPI('/menus', {
+    delete: async (date) => {
+        return await fetchAPI(`/menus/${date}`, {
             method: 'DELETE',
             headers: userCodeHeaders(),
-            body: JSON.stringify(body),
         });
     },
 };
